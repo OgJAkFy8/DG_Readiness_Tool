@@ -106,7 +106,7 @@ Function Get-DgReadiness
   BEGIN
   {
     
-    $Script:LogFile = ('{0}\DeviceGuardCheckLog-{1}.txt' -f $OutputFilePath, (Get-Date -Format MMddhhmmss))
+    $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-Date -Format MMddhhmmss))
 
     $Script:CompatibleModules = New-Object -TypeName System.Text.StringBuilder
     $Script:FailingModules = New-Object -TypeName System.Text.StringBuilder
@@ -115,9 +115,8 @@ Function Get-DgReadiness
     $Script:DGVerifyCrit = New-Object -TypeName System.Text.StringBuilder
     $Script:DGVerifyWarn = New-Object -TypeName System.Text.StringBuilder
     $Script:DGVerifySuccess = New-Object -TypeName System.Text.StringBuilder # Potentially Unsed Assignment
-
-    # $registryPath = 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard'
-    $registryPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities'
+    $registryPath = 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' # TEsting without admin
+    #$registryPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities'
 
     $Script:Sys32Path = "$env:windir\system32"
     $Script:DriverPath = "$env:windir\system32\drivers"
@@ -175,7 +174,6 @@ Function Get-DgReadiness
 
     $HSTITest_Encoded = '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b3IgAERldGVybWluaW5nIENvdW50LiAAAAAAAAAAAAAAAAAAICEhISBFcnJvciBidWZmZXIgZmFpbGVkIGFsbG9jYXRpb24gISEhIAAAAAAAAAAARGV0ZXJtaW5lIFNlY3VyaXR5RmVhdHVyZXNTaXplLiAAAAAAAAAAAExvb3AuLi4gAAAAAAAAAAAAAAAAAAAAACBVbnN1cHBvcnRlZCBBSVAgaWdub3JlZCAAAAAAAAAAICEhISBVRUZJIFByb3RvY29sIEVycm9yIERldGVjdGVkICEhISAAADpJRCAAAAAAIElEOgAAAAA6RVJST1IgACBFUlJPUjoAOlJPTEUgAAAgUk9MRToAAAAAAAAAAAAAOnNlY3VyaXR5RmVhdHVyZXNTaXplIAAAAAAAAAAAAAAgc2VjdXJpdHlGZWF0dXJlc1NpemU6AAAAAAAAAAAAACAhISEgRXJyb3IgZGV0ZWN0ZWQsIGJhaWxpbmcgb3V0ICEhISAAAAAAAAAAAAAAAFZlcmlmaWVkIGJ1ZmZlciBhbGxvY2F0aW9uIGZhaWxlZC4AAAAAAAAAAAAAAAAAAExvb3Bpbmcgb24gcHJvdmlkZXJzIHRvIGFjY3VtdWxhdGUgaW1wbGVtZW50ZWQgYW5kIHZlcmlmaWVkLgAAAABDb21wYXJpbmcgcmVxdWlyZWQgYnl0ZSB0byB2ZXJpZmllZC4uLgAAOlZFUklGSUVEIAAAAAAAACBWRVJJRklFRDoAAAAAAAA6UkVRVUlSRUQgAAAAAAAAIFJFUVVJUkVEOgAAAAAAAAAAAAAAAAAAISEhIHZlcmlmaWVkIGJ5dGUgZG9lcyBub3QgbWF0Y2ggcmVxdWlyZWQgISEhAAAAQ0xFQU5VUCAAAAAAAAAAADpPVkVSQUxMAAAAAAAAAABPVkVSQUxMOgAAAAAAAAAAUHJvdmlkZXIgRXJyb3JzIGNvcHkgc3RhcnQAAAAAAABQcm92aWRlciBFcnJvcnMgY29weSBlbmQAAAAAAAAAAEJMT0IgU3RhcnQ6AAAAAAA6QkxPQiBFbmQgIAAAAAAAAAAAAGt3EVgAAAAAAgAAACUAAAD4NQAA+BsAAAAAAABrdxFYAAAAAA0AAACgAQAAIDYAACAcAABSU0RT1J4Ttoijw0G4zY0uYG3g7wEAAABIc3RpVGVzdC5wZGIAAAAA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ZXIAAA8AU2V0VW5oYW5kbGVkRXhjZXB0aW9uRmlsdGVyAAwAR2V0Q3VycmVudFByb2Nlc3MATQBUZXJtaW5hdGVQcm9jZXNzAABhcGktbXMtd2luLWNvcmUtaGVhcC1sMS0yLTAuZGxsAGFwaS1tcy13aW4tY29yZS11dGlsLWwxLTEtMC5kbGwAYXBpLW1zLXdpbi1jb3JlLXByb2ZpbGUtbDEtMS0wLmRsbAAAYXBpLW1zLXdpbi1jb3JlLXByb2Nlc3N0aHJlYWRzLWwxLTEtMi5kbGwAYXBpLW1zLXdpbi1jb3JlLXN5c2luZm8tbDEtMi0xLmRsbAAAYXBpLW1zLXdpbi1jb3JlLWxpYnJhcnlsb2FkZXItbDEtMi0wLmRsbAAAYXBpLW1zLXdpbi1jb3JlLWVycm9yaGFuZGxpbmctbDEtMS0xLmRsbAAAAABfX0Nfc3BlY2lmaWNfaGFuZGxlcgAAYXBpLW1zLXdpbi1jb3JlLWNydC1sMS0xLTAuZGxsAADbAU50UXVlcnlTeXN0ZW1JbmZvcm1hdGlvbgAAWQBXcml0ZUZpbGUAUwBTZXRGaWxlUG9pbnRlcgAABQBHZXRMYXN0RXJyb3IAAAUAQ3JlYXRlRmlsZUEAAABDbG9zZUhhbmRsZQACAEhlYXBBbGxvYwBhcGktbXMtd2luLWNvcmUtZmlsZS1sMS0yLTEuZGxsAGFwaS1tcy13aW4tY29yZS1oYW5kbGUtbDEtMS0wLmRsbAAzAG1lbWNweQAANwBtZW1zZXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyot8tmSsAAM1dINJm1P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAXEQAAwDcAACwRAAAaEgAA1DcAACASAABwEgAA8DcAAHgSAAC2EgAA+DcAALwSAADyEgAACDgAAPgSAABRGQAAEDgAAFgZAACaGgAAMDgAAKAaAAB7GwAAyDgAAJAbAADNGwAA+DcAANQbAAD8HAAASDgAABAdAAAuHQAA2DgAAFQdAAAkHgAA3DgAAEQeAABdHgAA8DcAAHweAACwHgAA6DgAAMAeAAAxIAAA8DgAAGwgAACJIAAA8DcAAJAgAADrIAAA/DgAAAAhAAACIQAA+DgAAAghAAAqIQAAwDgAACohAABMIQAAwDgAAEwhAABuIQAAwDgAAG4hAACQIQAAwDgAAJAhAAC1IQAAwDgAALUhAADFIQAAwDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAABgAAAAAoAigaKCAoIigkKAoojCiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='
 
-    
     ########
     # All messages and Error messages
     $MessageInfo = @{
@@ -261,8 +259,6 @@ Function Get-DgReadiness
       Warning_2008        = 'SMM Mitigation is absent'
       Warning_2009        = 'The following additional qualifications, if present, can enhance the security of Device Guard and Credential Guard on this system:'
     }
-  
-  
 
    $CheckList = [ordered]@{
         1 = @{
@@ -270,15 +266,15 @@ Function Get-DgReadiness
           Message = 'Driver Compatability'
         }
         2 = @{
-          Check   = 'Check-SecureBootState'
+          Check   = 'Test-SecureBootState'
           Message = 'Secure boot present'
         }
         3 = @{
-          Check   = 'Check-HSTI'
+          Check   = 'Test-HSTI'
           Message = 'MS UEFI HSTI tests'
         }
         4 = @{
-          Check   = 'Check-OSArchitecture'
+          Check   = 'Test-OSArchitecture'
           Message = 'OS Architecture'
         }
         5 = @{
@@ -286,23 +282,23 @@ Function Get-DgReadiness
           Message = 'Supported OS SKU'
         }
         6 = @{
-          Check   = 'Check-Virtualization'
+          Check   = 'Test-Virtualization'
           Message = 'Virtualization Firmware'
         }
         7 = @{
-          Check   = 'Check-TPM'
+          Check   = 'Test-TPM'
           Message = 'TPM version'
         }
         8 = @{
-          Check   = 'Check-SecureMOR'
+          Check   = 'Test-SecureMOR'
           Message = 'Secure MOR'
         }
         9 = @{
-          Check   = 'Check-NXProtection'
+          Check   = 'Test-NXProtection'
           Message = 'NX Protector'
         }
         10 = @{
-          Check   = 'Check-SMMProtection'
+          Check   = 'Test-SMMProtection'
           Message = 'SMM Mitigation'
         }
         11 = @{
@@ -311,12 +307,16 @@ Function Get-DgReadiness
         }
       }
 
-
-
     #########
     ## Log Functions
     function Use-TranscriptLog 
     {
+      <#
+        .SYNOPSIS
+        Creates a transcript of the session.
+      #>
+
+
       [cmdletbinding(DefaultParameterSetName = 'Start')]
       param(
         [Parameter(Mandatory = $false, Position = 0,ParameterSetName = 'Start')]
@@ -348,6 +348,9 @@ Function Get-DgReadiness
     function Write-Registry
     {
       <#
+        .SYNOPSIS
+        Used to write to the registry
+
           .NOTES
           String: Specifies a null-terminated string. Equivalent to REG_SZ.
           ExpandString: Specifies a null-terminated string that contains unexpanded references to environment variables that are expanded when the value is retrieved. Equivalent to REG_EXPAND_SZ.
@@ -356,8 +359,10 @@ Function Get-DgReadiness
           MultiString: Specifies an array of null-terminated strings terminated by two null characters. Equivalent to REG_MULTI_SZ.
           Qword: Specifies a 64-bit binary number. Equivalent to REG_QWORD.
           Unknown: Indicates an unsupported registry data type, such as REG_RESOURCE_LIST.
-
       #>
+
+
+
 
       param(
         [Parameter(Mandatory)][String]$registryPath,
@@ -418,63 +423,28 @@ Function Get-DgReadiness
       param
       (
         [Parameter(Mandatory)]
-        [String]$message
+        [String]$LogMessage
       )
-      $timeStamp = Get-Date -UFormat '%D %T'
-
-      Tee-Object -InputObject ('{0} : {1}' -f $timeStamp, $message) -FilePath $LogFile -Append
-      Write-Verbose -Message ('Write Log >>> {0}' -f $message)
-    }
-
-    function Log-ToLogAndConsole([Parameter(Mandatory)][String]$message)
-    {
-      $FunctionMessage = $MyInvocation.MyCommand
-      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-
-      Write-Verbose -Message $message #-Verbose
-      Write-Log -message $message
-    }
-
-    function Log-AndConsoleWarning([Parameter(Mandatory)]$message)
-    {
-      $FunctionMessage = $MyInvocation.MyCommand
-      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-
-      Write-Verbose -Message $message #-Verbose
-      Write-Log -message $message
-    }
-
-    function Log-AndConsoleSuccess([Parameter(Mandatory)]$message)
-    {
-      $FunctionMessage = $MyInvocation.MyCommand
-      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-
-      Write-Verbose -Message $message #-Verbose
-      Write-Log -message $message
-    }
-
-     function Log-AndConsole([Parameter(Mandatory)]$message)
-    {
-      $FunctionMessage = $MyInvocation.MyCommand
-      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-
-      Write-Verbose -Message $message #-Verbose
-      Write-Log -message $message
-    }
-
-    function Log-AndConsoleError([Parameter(Mandatory)]$message)
-    {
-      $FunctionMessage = $MyInvocation.MyCommand
-      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
       
-      Write-Verbose -Message $message #-Verbose
-      Write-Log -message $message
+            $FunctionMessage = $MyInvocation.MyCommand
+      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
+      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))$timeStamp = Get-Date -UFormat '%D %T'
+
+      Tee-Object -InputObject ('{0} : {1}' -f $timeStamp, $LogMessage) -FilePath $LogFile -Append
+      Write-Verbose -Message ('Write Log >>> {0}' -f $LogMessage)
     }
+
+<#    function Write-Log([Parameter(Mandatory)][String]$message)
+    {
+      $FunctionMessage = $MyInvocation.MyCommand
+      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
+      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
+
+      Write-Verbose -Message $message #-Verbose
+      Write-Log -LogMessage $message
+    }#>
+
+
 
     # Ridiculous amount of Fuctions
     ##########
@@ -492,18 +462,18 @@ Function Get-DgReadiness
       $cert = (Get-AuthenticodeSignature -FilePath $item.FullName).SignerCertificate
       if($cert.ToString().Contains('CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US'))
       {
-        Write-Log -message ('{0} {1}' -f $item.FullName, 'MS Exempted')
+        Write-Log -LogMessage ('{0} {1}' -f $item.FullName, 'MS Exempted')
         return 1
       }
       else
       {
-        Write-Log -message ('{0}.FullName Not-exempted' -f $item)
-        Write-Log -message $cert.ToString()
+        Write-Log -LogMessage ('{0}.FullName Not-exempted' -f $item)
+        Write-Log -LogMessage $cert.ToString()
         return 0
       }
     } 
 
-    function Check-Exemption
+    function Test-Exemption
     {
       param
       (
@@ -518,17 +488,17 @@ Function Get-DgReadiness
       $mod2 = Get-ChildItem -Path $DriverPath -Filter $_ModName
       if($mod1)
       { 
-        Write-Log -message ('NonDriver module {0}.FullName' -f $mod1)
+        Write-Log -LogMessage ('NonDriver module {0}.FullName' -f $mod1)
         return Test-IsExempt -item ($mod1) 
       }
       elseif($mod2)
       {
-        Write-Log -message ('Driver Module {0}.FullName' -f $mod2)
+        Write-Log -LogMessage ('Driver Module {0}.FullName' -f $mod2)
         return Test-IsExempt -item ($mod2)
       }
     }
 
-    function Check-FailedDriver
+    function Test-FailedDriver
     {
       param
       (
@@ -540,8 +510,8 @@ Function Get-DgReadiness
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
-      Write-Log -message 'Module: ' $_ModName.Trim()
-      if(Check-Exemption -_ModName ($_ModName.Trim()) - eq 1)
+      Write-Log -LogMessage ('Module: {0}' -f ($_ModName.Trim()))
+      if(Test-Exemption -_ModName ($_ModName.Trim()) - eq 1)
       {
         $null = $CompatibleModules.AppendLine(('Windows Signed: {0}.Trim()' -f $_ModName))
         return
@@ -556,7 +526,7 @@ Function Get-DgReadiness
       $separator = "`r`n", ''
       $option = [StringSplitOptions]::RemoveEmptyEntries
       $stats = $_tempStr.Split($separator,$option)
-      Write-Log -message $stats.Count
+      Write-Log -LogMessage $stats.Count
 
       $FailingStat = ''
       foreach( $stat in $stats)
@@ -581,7 +551,7 @@ Function Get-DgReadiness
       {
         $null = $FailingModules.AppendLine('Module: '+ $_ModName.Trim() + "`r`n`tReason: " + $FailingStat.Trim() )
       }
-      Write-Log -message 'Result: ' $Result
+      Write-Log -LogMessage ('Result: {0}' -f $Result)
     }
 
     function Show-CIStats
@@ -599,14 +569,14 @@ Function Get-DgReadiness
       $i1 = $str1.IndexOf('Code Integrity Statistics:'.ToLower())
       if($i1 -eq -1 )
       {
-        Write-Log -message 'String := ' $str1
-        Write-Log -message 'Warning! CI Stats are missing for ' $_ModName
+        Write-Log -LogMessage 'String := ' $str1
+        Write-Log -LogMessage 'Warning! CI Stats are missing for ' $_ModName
         return 
       }
       $temp_str1 = $str1.Substring($i1)
       $CIStats = $temp_str1.Substring(0).Trim()
 
-      Check-FailedDriver -_ModName $_ModName -CIStats $CIStats
+      Test-FailedDriver -_ModName $_ModName -CIStats $CIStats
     }
 
     function Show-ListOfDrivers
@@ -632,8 +602,8 @@ Function Get-DgReadiness
       $_SplitStr = $_tempStr.Split($separator,$option)
 
 
-      Write-Log -message $_SplitStr.Count
-      Log-AndConsole -message $UserMessage.Information_1027
+      Write-Log -LogMessage $_SplitStr.Count
+      Write-Log -LogMessage $UserMessage.Information_1027
       foreach($ModuleDetail in $_SplitStr)
       {
         #Write-Confirm-OSSKU $Module
@@ -644,13 +614,13 @@ Function Get-DgReadiness
           continue
         }
         $ModName = $ModuleDetail.Substring(0,$Index2-1)
-        Write-Log -message ('Driver: {0}' -f $ModName)
-        Write-Log -message ('Processing module: {0}' -f $ModName)
+        Write-Log -LogMessage ('Driver: {0}' -f $ModName)
+        Write-Log -LogMessage ('Processing module: {0}' -f $ModName)
         Show-CIStats -_ModName $ModName -str1 $ModuleDetail
       }
 
       $DriverScanCompletedMessage = ('Completed scan. List of Compatible Modules can be found at {0}' -f $LogFile)
-      Log-AndConsole -message $DriverScanCompletedMessage 
+      Write-Log -LogMessage $DriverScanCompletedMessage 
 
       if($FailingModules.Length -gt 0 -or $FailingExecuteWriteCheck.Length -gt 0 )
       {
@@ -658,22 +628,22 @@ Function Get-DgReadiness
         if($HLK)
         {
           Write-Verbose -Message $MessageWarning.IncompatibleHVDIDriver
-          Write-Log -message $MessageWarning.IncompatibleHVDIDriver
+          Write-Log -LogMessage $messageWarning.IncompatibleHVDIDriver
         }
         else 
         {
           Write-Verbose -Message $MessageWarning.IncompatibleHVDIDriver
-          Write-Log -message $MessageWarning.IncompatibleHVDIDriver
+          Write-Log -LogMessage $messageWarning.IncompatibleHVDIDriver
         }
 
-        Log-AndConsoleError -message $FailingExecuteWriteCheck.ToString()
+        Write-Log -LogMessage $FailingExecuteWriteCheck.ToString()
         if($HLK)
         {
-          Log-AndConsoleError -message $FailingModules.ToString()
+          Write-Log -LogMessage $FailingModules.ToString()
         }
         else
         {
-          Log-AndConsoleWarning -message $FailingModules.ToString()
+          Write-Log -LogMessage $FailingModules.ToString()
         }
         if($FailingModules.Length -ne 0 -or $FailingExecuteWriteCheck.Length -ne 0 )
         {
@@ -689,7 +659,7 @@ Function Get-DgReadiness
       }
       else
       {
-        Log-AndConsoleSuccess -message $MessageInfo.SuccessHVDIDriver
+        Write-Log -LogMessage $MessageInfo.SuccessHVDIDriver
       }
     }
 
@@ -701,56 +671,56 @@ Function Get-DgReadiness
 
       if($DGVerifyCrit.Length -ne 0 )
       {
-        Log-AndConsoleError -message 'Machine is not Device Guard / Credential Guard compatible because of the following:'
-        Log-AndConsoleError -message $DGVerifyCrit.ToString()
-        Log-AndConsoleWarning -message $DGVerifyWarn.ToString()
+        Write-Log -LogMessage 'Machine is not Device Guard / Credential Guard compatible because of the following:'
+        Write-Log -LogMessage $DGVerifyCrit.ToString()
+        Write-Log -LogMessage $DGVerifyWarn.ToString()
         if(!$HVCI -and !$DG)
         {
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Capable" /t REG_DWORD /d 0 /f '
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'CG_Capable' -value 0 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'CG_Capable' -value 0 -PropertyType DWord
         }
         if(!$CG)
         {
           # Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Capable" /t REG_DWORD /d 0 /f '
           # Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "HVCI_Capable" /t REG_DWORD /d 0 /f '
 
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'DG_Capable' -value 0 -PropertyType DWord
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'HVCI_Capable' -value 0 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'DG_Capable' -value 0 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'HVCI_Capable' -value 0 -PropertyType DWord
         }
       }
       elseif ($DGVerifyWarn.Length -ne 0 )
       {
-        Log-AndConsoleSuccess -message "Device Guard / Credential Guard can be enabled on this machine.`n"
-        Log-AndConsoleWarning -message 'The following additional qualifications, if present, can enhance the security of Device Guard / Credential Guard on this system:'
-        Log-AndConsoleWarning -message $DGVerifyWarn.ToString()
+        Write-Log -LogMessage "Device Guard / Credential Guard can be enabled on this machine.`n"
+        Write-Log -LogMessage 'The following additional qualifications, if present, can enhance the security of Device Guard / Credential Guard on this system:'
+        Write-Log -LogMessage $DGVerifyWarn.ToString()
         if(!$HVCI -and !$DG)
         {
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Capable" /t REG_DWORD /d 1 /f '
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'CG_Capable' -value 1 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'CG_Capable' -value 1 -PropertyType DWord
         }
         if(!$CG)
         {
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Capable" /t REG_DWORD /d 1 /f '
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "HVCI_Capable" /t REG_DWORD /d 1 /f '
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'DG_Capable' -value 1 -PropertyType DWord
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'HVCI_Capable' -value 1 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'DG_Capable' -value 1 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'HVCI_Capable' -value 1 -PropertyType DWord
         }
       }
       else
       {
-        Log-AndConsoleSuccess -message $MessageInfo.Info_130 # Info_130 = 'Machine is Device Guard / Credential Guard Ready.' 
+        Write-Log -LogMessage $MessageInfo.Info_130 # Info_130 = 'Machine is Device Guard / Credential Guard Ready.' 
 
         if(!$HVCI -and !$DG)
         {
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Capable" /t REG_DWORD /d 2 /f '
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name "CG_Capable" -value 2 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'CG_Capable' -value 2 -PropertyType DWord
         }
         if(!$CG)
         {
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Capable" /t REG_DWORD /d 2 /f '
           #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "HVCI_Capable" /t REG_DWORD /d 2 /f '
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name "DG_Capable" -value 2 -PropertyType DWord
-          Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name "HVCI_Capable" -value 2 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'DG_Capable' -value 2 -PropertyType DWord
+          Write-Registry -registryPath $registryPath -Name 'HVCI_Capable' -value 2 -PropertyType DWord
         }
       }
     }
@@ -785,8 +755,8 @@ Function Get-DgReadiness
       }
       catch
       {
-        Write-Log -message $_.Exception.Message 
-        Log-AndConsole -message $($UserMessage.FailKernel32)
+        Write-Log -LogMessage $_.Exception.Message 
+        Write-Log -LogMessage $($UserMessage.FailKernel32)
       }
     }
 
@@ -868,8 +838,8 @@ Function Get-DgReadiness
         if ([IntPtr]::Size -eq 8) 
         {
           #assuming 64 bit 
-          Write-Log -message ("`nKernel32::LoadLibrary 64bit --> 0x{0}" -f ('{0:X16}' -f $LibHandle.ToInt64()))
-          Write-Log -message ('HstiTest2::QueryHSTIdetails 64bit --> 0x{0}' -f ('{0:X16}' -f $FuncHandle.ToInt64()))
+          Write-Log -LogMessage ("`nKernel32::LoadLibrary 64bit --> 0x{0}" -f ('{0:X16}' -f $LibHandle.ToInt64()))
+          Write-Log -LogMessage ('HstiTest2::QueryHSTIdetails 64bit --> 0x{0}' -f ('{0:X16}' -f $FuncHandle.ToInt64()))
         }
         else
         {
@@ -891,17 +861,17 @@ Function Get-DgReadiness
         $hstiStatus = New-Object -TypeName bool
         #$hr = [HstiTest3]::QueryHSTI([ref] $hstiStatus)
 
-        Log-AndConsole -message ('HSTI Duple Count: {0}' -f $providerErrorDupleCount)
-        Log-AndConsole -message ('HSTI Blob size: {0}' -f $blobByteSize)
-        Log-AndConsole -message ('String: {0}' -f $string)
-        Log-AndConsole -message ('HSTIStatus: {0}' -f $hstiStatus)
+        Write-Log -LogMessage ('HSTI Duple Count: {0}' -f $providerErrorDupleCount)
+        Write-Log -LogMessage ('HSTI Blob size: {0}' -f $blobByteSize)
+        Write-Log -LogMessage ('String: {0}' -f $string)
+        Write-Log -LogMessage ('HSTIStatus: {0}' -f $hstiStatus)
         if(($blobByteSize -gt 512) -and ($providerErrorDupleCount -gt 0) -and $hstiStatus)
         {
-          Log-AndConsoleSuccess -message 'HSTI validation successful'
+          Write-Log -LogMessage 'HSTI validation successful'
         }
         elseif(($providerErrorDupleCount -eq 0) -or ($blobByteSize -le 512))
         {
-          Log-AndConsoleWarning -message 'HSTI is absent'
+          Write-Log -LogMessage 'HSTI is absent'
           $null = $DGVerifyWarn.AppendLine('HSTI is absent')
         }
         else
@@ -909,24 +879,24 @@ Function Get-DgReadiness
           $ErrorMessage = 'HSTI validation failed'
           if($HLK)
           {
-            Log-AndConsoleError -message $ErrorMessage
+            Write-Log -LogMessage $ErrorMessage
             $null = $DGVerifyCrit.AppendLine($ErrorMessage)
           }
           else 
           {
-            Log-AndConsoleWarning -message $ErrorMessage
+            Write-Log -LogMessage $ErrorMessage
             $null = $DGVerifyWarn.AppendLine('HSTI is absent')
           }
         }
       }
       catch 
       {
-        Log-AndConsoleError -message $_.Exception.Message 
-        Log-AndConsoleError -message 'Instantiate-HSTI failed'
+        Write-Log -LogMessage $_.Exception.Message 
+        Write-Log -LogMessage 'Instantiate-HSTI failed'
       }
     }
 
-    Function Check-DeviceGuard 
+    Function Test-DeviceGuard 
     <#bookmark NewFunction #>
     {
       [cmdletbinding(DefaultParameterSetName = 'Item')]
@@ -1000,11 +970,11 @@ Function Get-DgReadiness
 
       if($_ConfigCIState -ge 1)
       {
-        Log-AndConsoleSuccess -message ('{0} ({1})' -f $_ConfigCIRunning, $_ConfigCIMode)
+        Write-Log -LogMessage ('{0} ({1})' -f $_ConfigCIRunning, $_ConfigCIMode)
       }
       else
       {
-        Log-AndConsoleWarning -message ('{0} ({1})' -f $_ConfigCIDisabled, $_ConfigCIMode)
+        Write-Log -LogMessage ('{0} ({1})' -f $_ConfigCIDisabled, $_ConfigCIMode)
       }
     }
 
@@ -1023,11 +993,11 @@ Function Get-DgReadiness
 
       if($_HVCIState)
       {
-        Log-AndConsoleSuccess -message $_HvciRunning
+        Write-Log -LogMessage $_HvciRunning
       }
       else
       {
-        Log-AndConsoleWarning -message $_HvciDisabled
+        Write-Log -LogMessage $_HvciDisabled
       }
     }
 
@@ -1046,11 +1016,11 @@ Function Get-DgReadiness
 
       if($_CGState)
       {
-        Log-AndConsoleSuccess -message $_CGRunning
+        Write-Log -LogMessage $_CGRunning
       }
       else
       {
-        Log-AndConsoleWarning -message $_CGDisabled
+        Write-Log -LogMessage $_CGDisabled
       }
     }
 
@@ -1062,7 +1032,7 @@ Function Get-DgReadiness
     function Test-IsRedstone
     {
       $_osVersion = [environment]::OSVersion.Version
-      Write-Log -message $_osVersion
+      Write-Log -LogMessage $_osVersion
 
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
@@ -1094,14 +1064,14 @@ Function Get-DgReadiness
 
       try
       {
-        Write-Log -message ('Executing: {0}' -f $_cmd)
+        Write-Log -LogMessage ('Executing: {0}' -f $_cmd)
         $CmdOutput = Invoke-Command -ScriptBlock $_cmd | Out-String
-        Write-Log -message ('Output: {0}' -f $CmdOutput)
+        Write-Log -LogMessage ('Output: {0}' -f $CmdOutput)
       }
       catch 
       {
-        Write-Log -message ('Exception while exectuing {0}' -f $_cmd)
-        Write-Log -message $_.Exception.Message 
+        Write-Log -LogMessage ('Exception while exectuing {0}' -f $_cmd)
+        Write-Log -LogMessage $_.Exception.Message 
       }
     }
 
@@ -1128,7 +1098,7 @@ Function Get-DgReadiness
       else
       {
         Write-Warning -Message $MessageInfo.RebootRequired
-        Write-Log -message  $MessageInfo.RebootRequired
+        Write-Log -LogMessage  $MessageInfo.RebootRequired
       }
     }
 
@@ -1175,22 +1145,22 @@ Function Get-DgReadiness
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
 
-      $_HVCIState = Check-DeviceGuard -CheckDGRunning -ItemValue 2
+      $_HVCIState = Test-DeviceGuard -CheckDGRunning -ItemValue 2
       if($_HVCIState)
       {
-        Log-AndConsoleWarning -message $MessageWarning.Warning_100
-        Log-AndConsoleWarning -message $MessageWarning.Warning_101
+        Write-Log -LogMessage $MessageWarning.Warning_100
+        Write-Log -LogMessage $MessageWarning.Warning_101
       }
       Write-Verbose $MyInvocation.ScriptLineNumber
       $verifier_state = & "$env:windir\system32\verifier.exe" /query | Out-String
       if($verifier_state.ToString().Contains('No drivers are currently verified.'))
       {
-        Log-AndConsole -message ('Enabling Driver verifier - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Enabling Driver verifier - {0}' -f $MyInvocation.ScriptLineNumber)
         & "$env:windir\system32\verifier.exe" /flags 0x02000000 /all /log.code_integrity
 
-        Log-AndConsole -message ('Enabling Driver Verifier and Rebooting system - {0}' -f $MyInvocation.ScriptLineNumber)
-        Write-Log -message $verifier_state 
-        Log-AndConsole -message ('Please re-execute this script after reboot.... - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Enabling Driver Verifier and Rebooting system - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage $verifier_state 
+        Write-Log -LogMessage ('Please re-execute this script after reboot.... - {0}' -f $MyInvocation.ScriptLineNumber)
         
         Write-Warning -Message $MessageInfo.RebootRequired
         <#
@@ -1201,15 +1171,15 @@ Function Get-DgReadiness
             }
             else
             {
-            Log-AndConsole -message 'Please reboot manually and run the script again....'
+            Write-Log -LogMessage 'Please reboot manually and run the script again....'
             }
         #>
         Write-Verbose 'exit'
       }
       else
       {
-        Log-AndConsole -message ('Driver verifier already enabled - {0}' -f $MyInvocation.ScriptLineNumber)
-        Write-Log -message $verifier_state 
+        Write-Log -LogMessage ('Driver verifier already enabled - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage $verifier_state 
         Show-Summary -str ($verifier_state.Trim().ToLowerInvariant())
       }
     }
@@ -1224,40 +1194,40 @@ Function Get-DgReadiness
           foreach ($ObjItem in $CompConfig) 
           {
           $Role = $ObjItem.DomainRole
-          Write-Log -message ('Role={0}' -f $Role)
+          Write-Log -LogMessage ('Role={0}' -f $Role)
           Switch ($Role) 
           {
           0 
           {
-          Write-Log -message 'Standalone Workstation'
+          Write-Log -LogMessage 'Standalone Workstation'
           }
           1 
           {
-          Write-Log -message 'Member Workstation'
+          Write-Log -LogMessage 'Member Workstation'
           }
           2 
           {
-          Write-Log -message 'Standalone Server'
+          Write-Log -LogMessage 'Standalone Server'
           }
           3 
           {
-          Write-Log -message 'Member Server'
+          Write-Log -LogMessage 'Member Server'
           }
           4 
           {
-          Write-Log -message 'Backup Domain Controller'
+          Write-Log -LogMessage 'Backup Domain Controller'
           $_isDC = 1
           break
           }
           5 
           {
-          Write-Log -message 'Primary Domain Controller'
+          Write-Log -LogMessage 'Primary Domain Controller'
           $_isDC = 1
           break
           }
           default 
           {
-          Write-Log -message 'Unknown Domain Role'
+          Write-Log -LogMessage 'Unknown Domain Role'
           }
           }
           }
@@ -1273,7 +1243,7 @@ Function Get-DgReadiness
       <#
           $osname = $((Get-WmiObject -Class win32_operatingsystem).Name).ToLower()
           $_SKUSupported = 0
-          Write-Log -message ('OSNAME:{0}' -f $osname)
+          Write-Log -LogMessage ('OSNAME:{0}' -f $osname)
           $SKUarray = @('Enterprise', 'Education', 'IoT', 'Windows Server', 'Pro', 'Home')
           $HLKAllowed = @('microsoft windows 10 pro')
           foreach ($SKUent in $SKUarray) 
@@ -1299,90 +1269,90 @@ Function Get-DgReadiness
           Write-OSSKUErrorWrite-OSSKUError -message 'This PC edition is Supported for DeviceGuard'
           if(($_isDomainController -eq 1) -and !$HVCI -and !$DG)
           {
-          Log-AndConsoleError -message 'This PC is configured as a Domain Controller, Credential Guard is not supported on DC.'
+          Write-Log -LogMessage 'This PC is configured as a Domain Controller, Credential Guard is not supported on DC.'
           }
           Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "OSSKU" /t REG_DWORD /d 2 /f '
           }
           else 
           {
-          Log-AndConsoleError -message 'This PC edition is Unsupported for Device Guard'
+          Write-Log -LogMessage 'This PC edition is Unsupported for Device Guard'
           $null = $DGVerifyCrit.AppendLine('OS SKU unsupported')
           Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "OSSKU" /t REG_DWORD /d 0 /f '
           }
       #>
     }
-    function Check-OSArchitecture  # For Checks only.  serves no purpose
+    function Test-OSArchitecture  # For Checks only.  serves no purpose
     {
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
       $OSArch = $(Get-WmiObject -Class win32_operatingsystem).OSArchitecture
-      Write-Log -message $OSArch 
+      Write-Log -LogMessage $OSArch 
       if($OSArch.Contains('32-bit'))
       {
-        Log-AndConsoleSuccess -message ('64 bit arch..... - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('64 bit arch..... - {0}' -f $MyInvocation.ScriptLineNumber)
       }
       elseif($OSArch.Contains('64-bit'))
       {
-        Log-AndConsoleError -message ('32 bit arch.... - {0}' -f $MyInvocation.ScriptLineNumber) 
+        Write-Log -LogMessage ('32 bit arch.... - {0}' -f $MyInvocation.ScriptLineNumber) 
         $null = $DGVerifyCrit.AppendLine('32 Bit OS, OS Architecture failure..')
       }
       else
       {
-        Log-AndConsoleError -message ('Unknown architecture - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Unknown architecture - {0}' -f $MyInvocation.ScriptLineNumber)
         $null = $DGVerifyCrit.AppendLine('Unknown OS, OS Architecture failure..')
       }
     }
 
 
-    function Check-SecureBootState
+    function Test-SecureBootState
     {
       $_secureBoot = Confirm-SecureBootUEFI
-      Write-Log -message $_secureBoot
+      Write-Log -LogMessage $_secureBoot
       if($_secureBoot)
       {
-        Log-AndConsoleSuccess -message ('Secure Boot is present - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Secure Boot is present - {0}' -f $MyInvocation.ScriptLineNumber)
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "SecureBoot" /t REG_DWORD /d 2 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'SecureBoot' -value 2 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'SecureBoot' -value 2 -PropertyType DWord
       }
       else
       {
-        Log-AndConsoleError -message ('Secure Boot is absent / not enabled. - {0}' -f $MyInvocation.ScriptLineNumber)
-        Log-AndConsoleError -message ('If Secure Boot is supported on the system, enable Secure Boot in the BIOS and run the script again. - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Secure Boot is absent / not enabled. - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('If Secure Boot is supported on the system, enable Secure Boot in the BIOS and run the script again. - {0}' -f $MyInvocation.ScriptLineNumber)
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "SecureBoot" /t REG_DWORD /d 0 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name  "SecureBoot" -value 0 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name  'SecureBoot' -value 0 -PropertyType DWord
         $null = $DGVerifyCrit.AppendLine('Secure boot validation failed.')
       }
     }
 
-    function Check-Virtualization
+    function Test-Virtualization
     {
       $_vmmExtension = $(Get-WmiObject -Class Win32_processor).VMMonitorModeExtensions
       $_vmFirmwareExtension = $(Get-WmiObject -Class Win32_processor).VirtualizationFirmwareEnabled
       $_vmHyperVPresent = (Get-CimInstance -ClassName Win32_ComputerSystem).HypervisorPresent
-      Write-Log -message ('VMMonitorModeExtensions {0}' -f $_vmmExtension)
-      Write-Log -message ('VirtualizationFirmwareEnabled {0}' -f $_vmFirmwareExtension)
-      Write-Log -message ('HyperVisorPresent {0}' -f $_vmHyperVPresent)
+      Write-Log -LogMessage ('VMMonitorModeExtensions {0}' -f $_vmmExtension)
+      Write-Log -LogMessage ('VirtualizationFirmwareEnabled {0}' -f $_vmFirmwareExtension)
+      Write-Log -LogMessage ('HyperVisorPresent {0}' -f $_vmHyperVPresent)
 
       #success if either processor supports and enabled or if hyper-v is present
       if(($_vmmExtension -and $_vmFirmwareExtension) -or $_vmHyperVPresent )
       {
-        Log-AndConsoleSuccess -message 'Virtualization firmware check passed'
+        Write-Log -LogMessage 'Virtualization firmware check passed'
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "Virtualization" /t REG_DWORD /d 2 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'Virtualization' -value 2 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'Virtualization' -value 2 -PropertyType DWord
       }
       else
       {
-        Log-AndConsoleError -message 'Virtualization firmware check failed.'
-        Log-AndConsoleError -message 'If Virtualization extensions are supported on the system, enable hardware virtualization (Intel Virtualization Technology, Intel VT-x, Virtualization Extensions, or similar) in the BIOS and run the script again.'
+        Write-Log -LogMessage 'Virtualization firmware check failed.'
+        Write-Log -LogMessage 'If Virtualization extensions are supported on the system, enable hardware virtualization (Intel Virtualization Technology, Intel VT-x, Virtualization Extensions, or similar) in the BIOS and run the script again.'
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "Virtualization" /t REG_DWORD /d 0 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'Virtualization' -value 0 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'Virtualization' -value 0 -PropertyType DWord
       $null = $DGVerifyCrit.AppendLine('Virtualization firmware check failed.')
       }
     }
 
-    function Check-TPM
+    function Test-TPM
     {
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
@@ -1396,128 +1366,128 @@ Function Get-DgReadiness
         {
           if($HLK)
           {
-            Log-AndConsoleSuccess -message ('TPM 1.2 is present. - {0}' -f $MyInvocation.ScriptLineNumber)
+            Write-Log -LogMessage ('TPM 1.2 is present. - {0}' -f $MyInvocation.ScriptLineNumber)
           }
           else
           {
             $WarningMsg = ('TPM 1.2 is Present. TPM 2.0 is Preferred. - {0}' -f $MyInvocation.ScriptLineNumber)
-            Log-AndConsoleWarning -message $WarningMsg
+            Write-Log -LogMessage $WarningMsg
             $null = $DGVerifyWarn.AppendLine($WarningMsg)
           }
         }
         else
         {
-          Log-AndConsoleSuccess -message ('TPM 2.0 is present. - {0}' -f $MyInvocation.ScriptLineNumber)
+          Write-Log -LogMessage ('TPM 2.0 is present. - {0}' -f $MyInvocation.ScriptLineNumber)
         }
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "TPM" /t REG_DWORD /d 2 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'TPM' -value 2 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'TPM' -value 2 -PropertyType DWord
       }
       else
       {
         $WarningMsg = $UserMessage.Error_100 
         if($HLK)
         {
-          Log-AndConsoleError -message $WarningMsg
+          Write-Log -LogMessage $WarningMsg
           $null = $DGVerifyCrit.AppendLine($WarningMsg)
         }
         else
         {
-          Log-AndConsoleWarning -message $WarningMsg
+          Write-Log -LogMessage $WarningMsg
           $null = $DGVerifyWarn.AppendLine($WarningMsg)
         }
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "TPM" /t REG_DWORD /d 0 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'TPM' -value 0 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'TPM' -value 0 -PropertyType DWord
       }
     }
 
-    function Check-SecureMOR
+    function Test-SecureMOR
     {
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
-      $isSecureMOR = Check-DeviceGuard -CheckDGFeatures -ItemValue 4
-      Write-Log -message ('isSecureMOR= {0} ' -f $isSecureMOR) 
+      $isSecureMOR = Test-DeviceGuard -CheckDGFeatures -ItemValue 4
+      Write-Log -LogMessage ('isSecureMOR= {0} ' -f $isSecureMOR) 
       if($isSecureMOR -eq 1)
       {
-        Log-AndConsoleSuccess -message $MessageInfo.SuccessMOR
+        Write-Log -LogMessage $MessageInfo.SuccessMOR
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "SecureMOR" /t REG_DWORD /d 2 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'SecureMOR' -value 2 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'SecureMOR' -value 2 -PropertyType DWord
       }
       else
       {
         $WarningMsg = $MessageWarning.AbsentMOR
         if($HLK)
         {
-          Log-AndConsoleError -message $WarningMsg
+          Write-Log -LogMessage $WarningMsg
           $null = $DGVerifyCrit.AppendLine($WarningMsg)
         }
         else
         {
-          Log-AndConsoleWarning -message $WarningMsg
+          Write-Log -LogMessage $WarningMsg
           $null = $DGVerifyWarn.AppendLine($WarningMsg)
         }
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "SecureMOR" /t REG_DWORD /d 0 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'SecureMOR' -value 0 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'SecureMOR' -value 0 -PropertyType DWord
       }
     }
 
-    function Check-NXProtection
+    function Test-NXProtection
     {
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
       
-      $isNXProtected = Check-DeviceGuard  -CheckDGFeatures -ItemValue 5
-      Write-Log -message ('isNXProtected= {0} ' -f $isNXProtected) 
+      $isNXProtected = Test-DeviceGuard  -CheckDGFeatures -ItemValue 5
+      Write-Log -LogMessage ('isNXProtected= {0} ' -f $isNXProtected) 
       if($isNXProtected -eq 1)
       {
-        Log-AndConsoleSuccess -message ('NX Protector is available - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('NX Protector is available - {0}' -f $MyInvocation.ScriptLineNumber)
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "UEFINX" /t REG_DWORD /d 2 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'UEFINX' -value 2 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'UEFINX' -value 2 -PropertyType DWord
       }
       else
       {
-        Log-AndConsoleWarning -message ('NX Protector is absent - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('NX Protector is absent - {0}' -f $MyInvocation.ScriptLineNumber)
         $null = $DGVerifyWarn.AppendLine('NX Protector is absent')
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "UEFINX" /t REG_DWORD /d 0 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'UEFINX' -value 0 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'UEFINX' -value 0 -PropertyType DWord
       }
     }
 
-    function Check-SMMProtection
+    function Test-SMMProtection
     {
       
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
-      $isSMMMitigated = Check-DeviceGuard -CheckDGFeatures -ItemValue 6
-      Write-Log -message ('isSMMMitigated= {0} ' -f $isSMMMitigated) 
+      $isSMMMitigated = Test-DeviceGuard -CheckDGFeatures -ItemValue 6
+      Write-Log -LogMessage ('isSMMMitigated= {0} ' -f $isSMMMitigated) 
       if($isSMMMitigated -eq 1)
       {
-        Log-AndConsoleSuccess -message ('SMM Mitigation is available - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('SMM Mitigation is available - {0}' -f $MyInvocation.ScriptLineNumber)
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "SMMProtections" /t REG_DWORD /d 2 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'SMMProtections' -value 2 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'SMMProtections' -value 2 -PropertyType DWord
       }
       else
       {
-        Log-AndConsoleWarning -message ('SMM Mitigation is absent - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('SMM Mitigation is absent - {0}' -f $MyInvocation.ScriptLineNumber)
         $null = $DGVerifyWarn.AppendLine('SMM Mitigation is absent')
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "SMMProtections" /t REG_DWORD /d 0 /f '
-        Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' -Name 'SMMProtections' -value 0 -PropertyType DWord
+        Write-Registry -registryPath $registryPath -Name 'SMMProtections' -value 0 -PropertyType DWord
       }
     }
 
-    function Check-HSTI
+    function Test-HSTI
     {
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
       
-      Log-AndConsole -message ('Copying HSTITest.dll - {0}' -f $MyInvocation.ScriptLineNumber)
+      Write-Log -LogMessage ('Copying HSTITest.dll - {0}' -f $MyInvocation.ScriptLineNumber)
       try 
       {
         $HSTITest_Decoded = [Convert]::FromBase64String($HSTITest_Encoded)
@@ -1525,8 +1495,8 @@ Function Get-DgReadiness
       }
       catch 
       {
-        Log-AndConsole -message $_.Exception.Message 
-        Log-AndConsole -message ('Copying and loading HSTITest.dll failed - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage $_.Exception.Message 
+        Write-Log -LogMessage ('Copying and loading HSTITest.dll failed - {0}' -f $MyInvocation.ScriptLineNumber)
       }
 
       Instantiate-Kernel32
@@ -1539,9 +1509,9 @@ Function Get-DgReadiness
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
        Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
-      # Log-AndConsole -message '###########################################################################'
-      # Log-AndConsole -message "Readiness Tool Version 3.4 Release. `nTool to check if your device is capable to run Device Guard and Credential Guard."
-      # Log-AndConsole -message '###########################################################################'
+      # Write-Log -LogMessage '###########################################################################'
+      # Write-Log -LogMessage "Readiness Tool Version 3.4 Release. `nTool to check if your device is capable to run Device Guard and Credential Guard."
+      # Write-Log -LogMessage '###########################################################################'
     }
 
   } # End BEGIN section
@@ -1560,7 +1530,7 @@ Function Get-DgReadiness
     $isRunningOnVM = (Get-WmiObject -Class win32_computersystem).model
     if($isRunningOnVM.Contains('Virtual'))
     {
-      Log-AndConsoleWarning -message 'Running on a Virtual Machine. DG/CG is supported only if both guest VM and host machine are running with Windows 10, version 1703 or later with English localization.'
+      Write-Log -LogMessage 'Running on a Virtual Machine. DG/CG is supported only if both guest VM and host machine are running with Windows 10, version 1703 or later with English localization.'
     }
     # Test Virtual System
     
@@ -1572,18 +1542,18 @@ Function Get-DgReadiness
 
       $DGRunning = $(Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard).SecurityServicesRunning
       $_ConfigCIState = $(Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard).CodeIntegrityPolicyEnforcementStatus
-      Write-Log -message ('Current DGRunning = {0}, ConfigCI= {1}' -f $DGRunning, $_ConfigCIState)
-      $_HVCIState = Check-DeviceGuard -CheckDGRunning -ItemValue 2
-      $_CGState = Check-DeviceGuard -CheckDGRunning -ItemValue 1
+      Write-Log -LogMessage ('Current DGRunning = {0}, ConfigCI= {1}' -f $DGRunning, $_ConfigCIState)
+      $_HVCIState = Test-DeviceGuard -CheckDGRunning -ItemValue 2
+      $_CGState = Test-DeviceGuard -CheckDGRunning -ItemValue 1
 
       if($HVCI)
       {
-        Write-Log -message ('_HVCIState: {0}' -f $_HVCIState)
+        Write-Log -LogMessage ('_HVCIState: {0}' -f $_HVCIState)
         Show-HVCIDetails -_HVCIState $_HVCIState
       }
       elseif($CG)
       {
-        Write-Log -message ('_CGState: {0}' -f $_CGState)
+        Write-Log -LogMessage ('_CGState: {0}' -f $_CGState)
         Show-CGDetails -_CGState $_CGState
  
         if($_CGState)
@@ -1597,27 +1567,27 @@ Function Get-DgReadiness
       }
       elseif($DG)
       {
-        Write-Log -message ('_HVCIState: {0}, _ConfigCIState: {1}' -f $_HVCIState, $_ConfigCIState) 
+        Write-Log -LogMessage ('_HVCIState: {0}, _ConfigCIState: {1}' -f $_HVCIState, $_ConfigCIState) 
 
         Show-HVCIDetails -_HVCIState $_HVCIState
         # Write-ConfigCIDetails -_ConfigCIState $_ConfigCIState 
 
         if($_ConfigCIState -and $_HVCIState)
         {
-          Log-AndConsoleSuccess -message ('HVCI, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
+          Write-Log -LogMessage ('HVCI, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
  
           Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 1 /f'
         }
         else
         {
-          Log-AndConsoleWarning -message ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
+          Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
  
           Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 0 /f'
         }
       }
       else 
       {
-        Write-Log -message ('_CGState: {0}, _HVCIState: {1}, _ConfigCIState: {2}' -f $_CGState, $_HVCIState, $_ConfigCIState) 
+        Write-Log -LogMessage ('_CGState: {0}, _HVCIState: {1}, _ConfigCIState: {2}' -f $_CGState, $_HVCIState, $_ConfigCIState) 
  
         Show-CGDetails -_CGState $_CGState
         Show-HVCIDetails -_HVCIState $_HVCIState
@@ -1625,11 +1595,11 @@ Function Get-DgReadiness
 
         if(($DGRunning.Length -ge 2) -and ($_CGState) -and ($_HVCIState) -and ($_ConfigCIState -ge 1))
         {
-          Log-AndConsoleSuccess -message ('HVCI, Credential-Guard, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
+          Write-Log -LogMessage ('HVCI, Credential-Guard, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
         }
         else
         {
-          Log-AndConsoleWarning -message ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
+          Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
         }
       }
     }
@@ -1641,12 +1611,12 @@ Function Get-DgReadiness
     {
       Write-HardwareReq
 
-      Log-AndConsole -message ('Checking if the device is DG/CG Capable - {0}' -f $MyInvocation.ScriptLineNumber)
+      Write-Log -LogMessage ('Checking if the device is DG/CG Capable - {0}' -f $MyInvocation.ScriptLineNumber)
 
       $_isRedstone = Test-IsRedstone
       if(!$_isRedstone)
       {
-        Log-AndConsoleWarning -message ('Capable is currently fully supported in Redstone only.. - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Capable is currently fully supported in Redstone only.. - {0}' -f $MyInvocation.ScriptLineNumber)
       }
 
       $null = 1
@@ -1668,7 +1638,7 @@ Function Get-DgReadiness
         . ($CheckList.$stepCounter.check)
       }
  #>
-      Log-AndConsole -message 'To learn more about required hardware and software please visit: https://aka.ms/dgwhcr'
+      Write-Log -LogMessage 'To learn more about required hardware and software please visit: https://aka.ms/dgwhcr'
 
   } #End PROCESS section
 
@@ -1766,8 +1736,8 @@ Function Set-DgReadiness
     {
       Write-HardwareReq
 
-      Log-AndConsole -message ('Enabling Device Guard and Credential Guard - {0}' -f $MyInvocation.ScriptLineNumber)
-      Log-AndConsole -message ('Setting RegKeys to enable DG/CG - {0}' -f $MyInvocation.ScriptLineNumber)
+      Write-Log -LogMessage ('Enabling Device Guard and Credential Guard - {0}' -f $MyInvocation.ScriptLineNumber)
+      Write-Log -LogMessage ('Setting RegKeys to enable DG/CG - {0}' -f $MyInvocation.ScriptLineNumber)
 
       Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 1 /f'
       #Only SecureBoot is required as part of RequirePlatformSecurityFeatures
@@ -1807,28 +1777,28 @@ Function Set-DgReadiness
         {
           if(!$SIPolicyPath) 
           { 
-            Write-Log -message ('Writing Decoded SIPolicy.p7b - {0}' -f $MyInvocation.ScriptLineNumber)
+            Write-Log -LogMessage ('Writing Decoded SIPolicy.p7b - {0}' -f $MyInvocation.ScriptLineNumber)
             $SIPolicy_Decoded = [Convert]::FromBase64String($SIPolicy_Encoded)
             [IO.File]::WriteAllBytes("$env:windir\System32\CodeIntegrity\SIPolicy.p7b",$SIPolicy_Decoded)
           }
           else
           {
-            Log-AndConsole -message ('Copying user provided SIpolicy.p7b - {0}' -f $MyInvocation.ScriptLineNumber)
+            Write-Log -LogMessage ('Copying user provided SIpolicy.p7b - {0}' -f $MyInvocation.ScriptLineNumber)
             $CmdOutput = Copy-Item -Path $SIPolicyPath -Destination "$env:windir\System32\CodeIntegrity\SIPolicy.p7b" | Out-String
-            Write-Log -message $CmdOutput
+            Write-Log -LogMessage $CmdOutput
           }
         }
       }
       catch
       {
-        Log-AndConsole -message ('Writing SIPolicy.p7b file failed - {0}' -f $MyInvocation.ScriptLineNumber)
+        Write-Log -LogMessage ('Writing SIPolicy.p7b file failed - {0}' -f $MyInvocation.ScriptLineNumber)
       }
 
-      Log-AndConsole -message ('Enabling Hyper-V and IOMMU - {0}' -f $MyInvocation.ScriptLineNumber)
+      Write-Log -LogMessage ('Enabling Hyper-V and IOMMU - {0}' -f $MyInvocation.ScriptLineNumber)
       $_isRedstone = Test-IsRedstone
       if(!$_isRedstone)
       {
-        Log-AndConsole -message 'OS Not Redstone, enabling IsolatedUserMode separately'
+        Write-Log -LogMessage 'OS Not Redstone, enabling IsolatedUserMode separately'
         #Enable/Disable IOMMU seperately
         Write-Warning "Execute-CommandAndLog -_cmd 'DISM.EXE /Online /Enable-Feature:IsolatedUserMode /NoRestart'"
       }
@@ -1838,16 +1808,16 @@ Function Set-DgReadiness
         $CmdOutput = & "$env:windir\system32\dism.exe" /Online /Enable-Feature:Microsoft-Hyper-V-Online /All /NoRestart | Out-String
       }
 
-      Write-Log -message $CmdOutput
+      Write-Log -LogMessage $CmdOutput
       if($CmdOutput.Contains('The operation completed successfully.'))
       {
-        Log-AndConsoleSuccess -message 'Enabling Hyper-V and IOMMU successful'
+        Write-Log -LogMessage 'Enabling Hyper-V and IOMMU successful'
         #Reg key for HLK validation of DISM.EXE step
         Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "HyperVEnabled" /t REG_DWORD /d 1 /f'
       }
       else
       {
-        Log-AndConsoleWarning -message 'Enabling Hyper-V failed please check the log file'
+        Write-Log -LogMessage 'Enabling Hyper-V failed please check the log file'
         #Reg key for HLK validation of DISM.EXE step
         Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "HyperVEnabled" /t REG_DWORD /d 0 /f'
       }
@@ -1856,8 +1826,8 @@ Function Set-DgReadiness
 
   if($Disable)
   {
-    Log-AndConsole -message 'Disabling Device Guard and Credential Guard'
-    Log-AndConsole -message 'Deleting RegKeys to disable DG/CG'
+    Write-Log -LogMessage 'Disabling Device Guard and Credential Guard'
+    Write-Log -LogMessage 'Deleting RegKeys to disable DG/CG'
 
     Execute-CommandAndLog -_cmd 'REG DELETE "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /f'
     Execute-CommandAndLog -_cmd 'REG DELETE "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "RequirePlatformSecurityFeatures" /f'
@@ -1893,11 +1863,11 @@ Function Set-DgReadiness
 
     if(!$HVCI -and !$DG -and !$CG)
     {
-      Log-AndConsole -message 'Disabling Hyper-V and IOMMU'
+      Write-Log -LogMessage 'Disabling Hyper-V and IOMMU'
       $_isRedstone = Test-IsRedstone
       if(!$_isRedstone)
       {
-        Log-AndConsole -message 'OS Not Redstone, disabling IsolatedUserMode separately'
+        Write-Log -LogMessage 'OS Not Redstone, disabling IsolatedUserMode separately'
         #Enable/Disable IOMMU seperately
         Execute-CommandAndLog -_cmd 'DISM.EXE /Online /disable-Feature /FeatureName:IsolatedUserMode /NoRestart'
       }
@@ -1906,14 +1876,14 @@ Function Set-DgReadiness
       {
         $CmdOutput = & "$env:windir\system32\dism.exe" /Online /disable-Feature /FeatureName:Microsoft-Hyper-V-Online /NoRestart | Out-String
       }
-      Write-Log -message $CmdOutput
+      Write-Log -LogMessage $CmdOutput
       if($CmdOutput.Contains('The operation completed successfully.'))
       {
-        Log-AndConsoleSuccess -message 'Disabling Hyper-V and IOMMU successful'
+        Write-Log -LogMessage 'Disabling Hyper-V and IOMMU successful'
       }
       else
       {
-        Log-AndConsoleWarning -message 'Disabling Hyper-V failed please check the log file'
+        Write-Log -LogMessage 'Disabling Hyper-V failed please check the log file'
       }
 
       #set of commands to run SecConfig.efi to delete UEFI variables if were set in pre OS
@@ -1924,10 +1894,10 @@ Function Set-DgReadiness
         !(Test-Path -Path $_)
       } |
       random
-      Write-Log -message ('FreeDrive={0}' -f $FreeDrive)
+      Write-Log -LogMessage ('FreeDrive={0}' -f $FreeDrive)
       Execute-CommandAndLog -_cmd 'mountvol $FreeDrive /s'
       $CmdOutput = Copy-Item -Path "$env:windir\System32\SecConfig.efi" -Destination $FreeDrive\EFI\Microsoft\Boot\SecConfig.efi -Force | Out-String
-      Log-AndConsole -message $CmdOutput
+      Write-Log -LogMessage $CmdOutput
       Execute-CommandAndLog -_cmd 'bcdedit /create "{0cb3b571-2f2e-4343-a879-d86a476d7215}" /d DGOptOut /application osloader'
       Execute-CommandAndLog -_cmd 'bcdedit /set "{0cb3b571-2f2e-4343-a879-d86a476d7215}" path \EFI\Microsoft\Boot\SecConfig.efi'
       Execute-CommandAndLog -_cmd 'bcdedit /set "{bootmgr}" bootsequence "{0cb3b571-2f2e-4343-a879-d86a476d7215}"'
