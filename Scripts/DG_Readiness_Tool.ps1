@@ -395,7 +395,11 @@ Function Get-DgReadiness
     
      function Write-ProgressHelper 
       {
-        param(
+             <#
+        .SYNOPSIS
+        Displays the progress bar with the current step
+      #>
+       param(
           [Parameter(Mandatory)][int]$StepNumber,
           [Parameter(Mandatory)][string]$message,
           [Parameter(Mandatory)][int]$Steps
@@ -407,7 +411,11 @@ Function Get-DgReadiness
 
     function Write-OnScreen
     <#Bookmark NewFunction#>
-    {
+           <#
+        .SYNOPSIS
+        Originally for the replacement of something, but I can't remember.  It will be removed.
+      #>
+      {
       param(
         [Parameter(Mandatory = $false)][String]$LogFile,
         [Parameter(Mandatory = $false)][String]$message
@@ -420,15 +428,21 @@ Function Get-DgReadiness
 
     function Write-Log
     {
-      param
+       <#
+        .SYNOPSIS
+        Used to write data to a date stamped log.  This is independent of the transcript which is over written each time.
+      #>
+       param
       (
         [Parameter(Mandatory)]
         [String]$LogMessage
       )
       
-            $FunctionMessage = $MyInvocation.MyCommand
+      $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))$timeStamp = Get-Date -UFormat '%D %T'
+      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
+      
+      $timeStamp = Get-Date -UFormat '%D %T'
 
       Tee-Object -InputObject ('{0} : {1}' -f $timeStamp, $LogMessage) -FilePath $LogFile -Append
       Write-Verbose -Message ('Write Log >>> {0}' -f $LogMessage)
@@ -450,7 +464,14 @@ Function Get-DgReadiness
     ##########
     function Test-IsExempt 
     {
-      param
+       <#
+        .SYNOPSIS
+        Test to find if whatever item is passed is exempt.
+      
+        .NOTE
+        May be able to be combined 
+        #>
+            param
       (
         [Parameter(Mandatory)][IO.FileInfo]
         $item
@@ -475,7 +496,14 @@ Function Get-DgReadiness
 
     function Test-Exemption
     {
-      param
+       <#
+        .SYNOPSIS
+        Test to find if the the mod is exempt
+
+        .NOTE
+        May be able to be combined 
+      #>
+            param
       (
         [Parameter(Mandatory)]$_ModName
       )
@@ -500,7 +528,15 @@ Function Get-DgReadiness
 
     function Test-FailedDriver
     {
-      param
+        <#
+        .SYNOPSIS
+        Tests for a driver
+      
+        .NOTE
+        May be able to be combined 
+        #>
+ 
+       param
       (
         [Parameter(Mandatory)][String]$_ModName,
 
@@ -556,6 +592,13 @@ Function Get-DgReadiness
 
     function Show-CIStats
     {
+        <#
+        .SYNOPSIS
+        Displays the CI stats and then feeds them to the "Test-FailedDRiver"
+      
+        .NOTE
+        May be able to be combined 
+        #>
       param
       (
         [Parameter(Mandatory)][String]$_ModName,
@@ -581,7 +624,14 @@ Function Get-DgReadiness
 
     function Show-ListOfDrivers
     {
-      param
+              <#
+        .SYNOPSIS
+        Shows all of the Drivers on the machine.
+      
+        .NOTE
+        May be able to be depracated.  It seems to do more talking than actual work.
+        #>
+        param
       (
         [Parameter(Mandatory)][Object]$str
       )
@@ -665,6 +715,14 @@ Function Get-DgReadiness
 
     function Show-Summary()
     {
+        <#
+        .SYNOPSIS
+        Make changes to the Registry
+      
+        .NOTE
+        It is labled as a "Show", but does make a lot of changes to the registry.  This needs to be relabled and moved to the Set-DGReadiness
+        #>
+
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -728,6 +786,13 @@ Function Get-DgReadiness
 
     function Instantiate-Kernel32 
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -762,6 +827,13 @@ Function Get-DgReadiness
 
     function Instantiate-HSTI 
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -899,6 +971,13 @@ Function Get-DgReadiness
     Function Test-DeviceGuard 
     <#bookmark NewFunction #>
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       [cmdletbinding(DefaultParameterSetName = 'Item')]
       param
       (
@@ -937,6 +1016,13 @@ Function Get-DgReadiness
   
     function Write-ConfigCIDetails
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       param
       (
         [Parameter(Mandatory)][Object]$_ConfigCIState
@@ -980,6 +1066,13 @@ Function Get-DgReadiness
 
     function Show-HVCIDetails
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       param
       (
         [Parameter(Mandatory)][Object]$_HVCIState
@@ -1003,6 +1096,13 @@ Function Get-DgReadiness
 
     function Show-CGDetails
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       param
       (
         [Parameter(Mandatory)][Object]$_CGState
@@ -1031,6 +1131,13 @@ Function Get-DgReadiness
 
     function Test-IsRedstone
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $_osVersion = [environment]::OSVersion.Version
       Write-Log -LogMessage $_osVersion
 
@@ -1054,6 +1161,13 @@ Function Get-DgReadiness
 
     function Execute-CommandAndLog
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       param
       (
         [Parameter(Mandatory)][Object]$_cmd
@@ -1077,6 +1191,13 @@ Function Get-DgReadiness
 
     function Print-RebootWarning
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1084,6 +1205,13 @@ Function Get-DgReadiness
 
     function Auto-RebootHelper
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1104,6 +1232,13 @@ Function Get-DgReadiness
 
     function Reset-Verifier  
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $verifier_state = & "$env:windir\system32\verifier.exe" /query | Out-String
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
@@ -1118,6 +1253,13 @@ Function Get-DgReadiness
 
     function Write-HardwareReq
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       param(
         [Parameter(Mandatory = $false)]$MsgDetails
       )
@@ -1136,6 +1278,13 @@ Function Get-DgReadiness
 
     function Confirm-DriverCompatability
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       [CmdletBinding()]
       param(
         [Parameter(Mandatory=$false)]$MsgDetails
@@ -1183,8 +1332,16 @@ Function Get-DgReadiness
         Show-Summary -str ($verifier_state.Trim().ToLowerInvariant())
       }
     }
+
     function Test-IsDomainController # Replaced by test at to of script
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1237,6 +1394,13 @@ Function Get-DgReadiness
 
     function Confirm-OSSKU  # Does  not seem to be used anywhere
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1281,8 +1445,16 @@ Function Get-DgReadiness
           }
       #>
     }
+    
     function Test-OSArchitecture  # For Checks only.  serves no purpose
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1305,9 +1477,15 @@ Function Get-DgReadiness
       }
     }
 
-
     function Test-SecureBootState
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $_secureBoot = Confirm-SecureBootUEFI
       Write-Log -LogMessage $_secureBoot
       if($_secureBoot)
@@ -1328,6 +1506,13 @@ Function Get-DgReadiness
 
     function Test-Virtualization
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       $_vmmExtension = $(Get-WmiObject -Class Win32_processor).VMMonitorModeExtensions
       $_vmFirmwareExtension = $(Get-WmiObject -Class Win32_processor).VirtualizationFirmwareEnabled
       $_vmHyperVPresent = (Get-CimInstance -ClassName Win32_ComputerSystem).HypervisorPresent
@@ -1354,6 +1539,13 @@ Function Get-DgReadiness
 
     function Test-TPM
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1402,6 +1594,13 @@ Function Get-DgReadiness
 
     function Test-SecureMOR
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1434,6 +1633,13 @@ Function Get-DgReadiness
 
     function Test-NXProtection
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1458,6 +1664,13 @@ Function Get-DgReadiness
 
     function Test-SMMProtection
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
       
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
@@ -1482,6 +1695,13 @@ Function Get-DgReadiness
 
     function Test-HSTI
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       # Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1505,6 +1725,13 @@ Function Get-DgReadiness
 
     function Write-ToolVersion
     {
+      <#
+        .SYNOPSIS
+        Default Comment based Help.  This still needs to be completed.
+      
+        .NOTE
+        This still needs to be completed.
+        #>
             $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
        Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
@@ -1530,7 +1757,8 @@ Function Get-DgReadiness
     $isRunningOnVM = (Get-WmiObject -Class win32_computersystem).model
     if($isRunningOnVM.Contains('Virtual'))
     {
-      Write-Log -LogMessage 'Running on a Virtual Machine. DG/CG is supported only if both guest VM and host machine are running with Windows 10, version 1703 or later with English localization.'
+      Write-Warning -Message $UserMessage.Warning_2007
+      Write-Log -LogMessage $UserMessage.Warning_2007
     }
     # Test Virtual System
     
@@ -1558,12 +1786,16 @@ Function Get-DgReadiness
  
         if($_CGState)
         {
-          Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 1 /f'
-        }
+          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 1 /f'
+        Write-Verbose -Message 'CG_Running -value 1'
+        Write-Registry -registryPath $registryPath -Name 'CG_Running' -value 1 -PropertyType DWORD
+    }
         else
         {
-          Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 0 /f'
-        }
+          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 0 /f'
+        Write-Verbose -Message 'CG_Running -value 0'
+        Write-Registry -registryPath $registryPath -Name 'CG_Running' -value 0 -PropertyType DWORD
+    }
       }
       elseif($DG)
       {
@@ -1576,14 +1808,18 @@ Function Get-DgReadiness
         {
           Write-Log -LogMessage ('HVCI, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
  
-          Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 1 /f'
-        }
+          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 1 /f'
+        Write-Verbose -Message 'DG_Running -value 1'
+        Write-Registry -registryPath $registryPath -Name 'DG_Running' -value 1 -PropertyType DWORD
+    }
         else
         {
           Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
  
-          Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 0 /f'
-        }
+          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 0 /f'
+       Write-Verbose -Message 'DG_Running -value 0'
+       Write-Registry -registryPath $registryPath -Name 'DG_Running' -value 0 -PropertyType DWORD
+    }
       }
       else 
       {
@@ -1655,6 +1891,9 @@ Function Get-DgReadiness
 ######################################################################################################################################
 
 ######################################################################################################################################
+ 
+
+
  
 
 Function Set-DgReadiness 
@@ -1730,6 +1969,7 @@ Function Set-DgReadiness
 
       Log file with details is found here: $env:HOMEDRIVE\DGLogs 
   #>
+
 
       <# Enable and Disable #>
     if($Enable)
@@ -1918,8 +2158,8 @@ Function Set-DgReadiness
     }
     Auto-RebootHelper
   }
+
+
 }
-
-
 
 
