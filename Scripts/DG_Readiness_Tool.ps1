@@ -107,26 +107,35 @@ Function Get-DgReadiness
   {
     
     
-function Start-CheckList
-{
-  param
-  (
-    [Object]
-    [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="Data to process")]
-    $InputObject
-  )
-  process
-  {
-    
-          Write-ProgressHelper -Message ($CheckList.$InputObject.Message) -StepNumber ($stepCounter) -Steps $Steps
-          Write-Host $($CheckList.$InputObject.check)
-          . ($CheckList.$InputObject.check)
-          $stepCounter++
-        
-  }
-}
+    function Start-CheckList
+    {
+      <#
+          .SYNOPSIS
+          Run the checks listed in the hash table $Checklist
 
-$Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-Date -Format MMddhhmmss))
+          .NOTES
+          Place additional notes here.
+
+      #>
+
+
+      param
+      (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, HelpMessage = 'Data to process')]
+        $InputObject
+      )
+      process
+      {
+    
+        Write-ProgressHelper -Message ($CheckList.$InputObject.Message) -StepNumber ($stepCounter) -Steps $Steps
+        Write-Host $($CheckList.$InputObject.check)
+        . ($CheckList.$InputObject.check)
+        $stepCounter++
+        
+      }
+    }
+
+    $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-Date -Format MMddhhmmss))
 
     $Script:CompatibleModules = New-Object -TypeName System.Text.StringBuilder
     $Script:FailingModules = New-Object -TypeName System.Text.StringBuilder
@@ -145,7 +154,6 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
     {
       New-Item -ItemType Directory -Path $OutputFilePath
     }
-
 
 
 
@@ -212,12 +220,12 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       Deprecated           = 'Feature has been deprecated'
       SuccessHVDIDriver    = 'No Incompatible Drivers found'
       SuccessMOR           = 'Secure MOR is available'
+      Rewrite              = 'This section needs to be rewritten.'
     }
 
     $MessageWarning = @{
       IncompatibleHVDIDriver = 'Incompatible HVCI Kernel Driver Modules found'
       Warning_102            = 'Secure MOR is absent'
-      AbsentMOR              = 'Secure MOR is absent'
       Warning_100            = 'HVCI is already enabled on this machine, driver compat list might not be complete.'
       Warning_101            = 'Please disable HVCI and run the script again...'
     }
@@ -262,30 +270,31 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       Information_1026    = 'To learn more about required hardware and software please visit: https://aka.ms/dgwhcr'
       Information_1027    = 'Verifying each module please wait....'
       Information_1028    = 'Writing SI Policy.p7b file failed'
-      Information_2001    = 'Success: Device Guard and Credential Guard can be enabled on this machine.'
-      Information_2002    = 'Success: Machine is Device Guard and Credential Guard  Ready.'
-      Information_2008    = '64Bit architecture '
-      Information_2009    = 'Disabled: Hyper-V and  IOMMU '
-      Information_2010    = 'Enabled: Hyper-V and  IOMMU '
-      Information_2011    = 'Success: HSTI validation'
-      Information_2012    = 'Enabled: HVCI, and Config-Ciare running.'
-      Information_2013    = 'Enabled: HVCI, Credential Guard and Config-Ciare running.'
-      Information_2014    = 'Available: NX Protector'
-      Information_2015    = 'Present: Secure Boot'
-      Information_2016    = 'Available: SMM Mitigation'
-      Information_2017    = 'Present: TPM1.2'
-      Information_2018    = 'Present: TPM2.0'
-      Information_2019    = 'Passed: Virtualization firmware check'
-      Information_2020    = "Readiness Tool Version 3.4 Release.`n Tool to check if your device is capable to run Device Guard and Credential Guard ."
+      Information_1001    = 'Success: Device Guard and Credential Guard can be enabled on this machine.'
+      Information_1002    = 'Success: Machine is Device Guard and Credential Guard  Ready.'
+      Information_1008    = '64Bit architecture '
+      Information_1029    = 'Disabled: Hyper-V and  IOMMU '
+      Information_1030    = 'Enabled: Hyper-V and  IOMMU '
+      Information_1031    = 'Success: HSTI validation'
+      Information_1032    = 'Enabled: HVCI, and Config-Ciare running.'
+      Information_1033    = 'Enabled: HVCI, Credential Guard and Config-Ciare running.'
+      Information_1034    = 'Available: NX Protector'
+      Information_1035    = 'Present: Secure Boot'
+      Information_1036    = 'Available: SMM Mitigation'
+      Information_1037    = 'Present: TPM1.2'
+      Information_1038    = 'Present: TPM2.0'
+      Information_1039    = 'Passed: Virtualization firmware check'
+      Information_1040    = "Readiness Tool Version 3.4 Release.`n Tool to check if your device is capable to run Device Guard and Credential Guard ."
       Warning_2001        = 'Disabled: Hyper-V failed please check the log file'
       Warning_2002        = 'Enabled: Hyper-V failed please check the log file'
       Warning_2003        = 'HSTI is absent'
       Warning_2004        = 'Not all services are running.'
-      Warning_2005        = 'Not all services are running.'
       Warning_2006        = 'NX Protector is absent'
       Warning_2007        = 'Running on a Virtual Machine. DG/CG is supported only if both guest VM and host machine are running with Windows10, version 1703 or later with English localization.'
       Warning_2008        = 'SMM Mitigation is absent'
       Warning_2009        = 'The following additional qualifications, if present, can enhance the security of Device Guard and Credential Guard on this system:'
+    Information_1041 = 'HVCI is enabled and running.'
+    Information_1042 = 'Credential Guard is enabled and running.'
     }
 
     $CheckList = [ordered]@{
@@ -334,6 +343,27 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
         Message = 'Summary'
       }
     }
+
+
+    $WindowsVersions = @{
+      1909 = @{
+        Availabilitydate = '11/12/2019'
+        OSbuild          = '18363.72'
+        Endofservice     = '5/10/2022'
+      }
+      1903 = @{
+        Availabilitydate = '5/21/2019'
+        Osbuild          = '18362.72'
+        Endofservice     = '12/8/2020'
+      }
+      1809 = @{
+        Availabilitydate = '3/28/2019'
+        Osbuild          = '17763.1098'
+        Endofservice     = '5/11/2021'
+      }
+    }
+    $ReleaseId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion').ReleaseId
+    #$($WindowsVersions.$ReleaseId.Endofservice)
 
     #########
     ## New Functions
@@ -387,9 +417,6 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
           Qword: Specifies a 64-bit binary number. Equivalent to REG_QWORD.
           Unknown: Indicates an unsupported registry data type, such as REG_RESOURCE_LIST.
       #>
-
-
-
 
       param(
         [Parameter(Mandatory)][String]$registryPath,
@@ -531,15 +558,15 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       #>
       param
       (
-        [Parameter(Mandatory)]$_ModName
+        [Parameter(Mandatory)][String]$ModuleName
       )
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
 
-      $mod1 = Get-ChildItem -Path $Sys32Path -Filter $_ModName
-      $mod2 = Get-ChildItem -Path $DriverPath -Filter $_ModName
+      $mod1 = Get-ChildItem -Path $Sys32Path -Filter $ModuleName
+      $mod2 = Get-ChildItem -Path $DriverPath -Filter $ModuleName
       if($mod1)
       { 
         Write-Log -LogMessage ('NonDriver module {0}.FullName' -f $mod1)
@@ -564,18 +591,18 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
  
       param
       (
-        [Parameter(Mandatory)][String]$_ModName,
+        [Parameter(Mandatory)][String]$ModuleName,
 
-        [Parameter(Mandatory)][Object]$CIStats
+        [Parameter(Mandatory)]$CIStats
       )
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
 
-      Write-Log -LogMessage ('Module: {0}' -f ($_ModName.Trim()))
-      if((Test-Exemption -_ModName ($_ModName.Trim())) -eq 1)
+      Write-Log -LogMessage ('Module: {0}' -f ($ModuleName.Trim()))
+      if((Test-Exemption -ModuleName ($ModuleName.Trim())) -eq 1)
       {
-        $null = $CompatibleModules.AppendLine(('Windows Signed: {0}.Trim()' -f $_ModName))
+        $null = $CompatibleModules.AppendLine(('Windows Signed: {0}.Trim()' -f $ModuleName))
         return
       }
       $index = $CIStats.IndexOf('execute pool type count:'.ToLower())
@@ -603,15 +630,15 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       }
       if($Result.Contains('PASS'))
       {
-        $null = $CompatibleModules.AppendLine($_ModName.Trim())
+        $null = $CompatibleModules.AppendLine($ModuleName.Trim())
       }
       elseif($FailingStat.Trim().Contains('execute-write'))
       {
-        $null = $FailingExecuteWriteCheck.AppendLine('Module: '+ $_ModName.Trim() + "`r`n`tReason: " + $FailingStat.Trim() )
+        $null = $FailingExecuteWriteCheck.AppendLine('Module: '+ $ModuleName.Trim() + "`r`n`tReason: " + $FailingStat.Trim() )
       }
       else
       {
-        $null = $FailingModules.AppendLine('Module: '+ $_ModName.Trim() + "`r`n`tReason: " + $FailingStat.Trim() )
+        $null = $FailingModules.AppendLine('Module: '+ $ModuleName.Trim() + "`r`n`tReason: " + $FailingStat.Trim() )
       }
       Write-Log -LogMessage ('Result: {0}' -f $Result)
     }
@@ -645,7 +672,7 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       $temp_str1 = $str1.Substring($i1)
       $CIStats = $temp_str1.Substring(0).Trim()
 
-      Test-FailedDriver -_ModName $_ModName -CIStats $CIStats
+      Test-FailedDriver -ModuleName $_ModName -CIStats $CIStats
     }
 
     function Show-ListOfDrivers
@@ -995,6 +1022,8 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
 
     Function Test-DeviceGuard 
     <#bookmark NewFunction #>
+    <#bookmark Deprecated CheckDGRunning #>
+    <#bookmark Deprecated CheckDGFeatures #>
     {
       <#
           .SYNOPSIS
@@ -1011,6 +1040,8 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
         [Parameter(ParameterSetName = 'Features', Position = 0)]
         [Switch]$CheckDGFeatures,
         [Parameter(Mandatory,HelpMessage = 'Value to test against', Position = 1)]
+        [Parameter(ParameterSetName = 'Running', Position = 1)]
+        [Parameter(ParameterSetName = 'Features', Position = 1)]
         [int]$ItemValue
       )
       $FunctionMessage = $MyInvocation.MyCommand
@@ -1033,63 +1064,74 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       {
         if($DGObj.$DgItem[$i] -eq $ItemValue)
         {
-          return 1
+          return $true
         }
       }
-      return 0
+      return $false
     }
-  
+  #Test-DeviceGuard -CheckDGRunning -ItemValue 2
+
     function Write-ConfigCIDetails
+    <# bookmark Renamed Function PrintConfigCIDetails - Line-509 #>
     {
       <#
           .SYNOPSIS
-          Default Comment based Help.  This still needs to be completed.
+          Display the state of the CI
       
           .NOTE
-          This still needs to be completed.
+          Replaced PrintConfigCIDetails.
       #>
+
       param
       (
-        [Parameter(Mandatory)][Object]$_ConfigCIState
+        [Parameter(Mandatory)][Object]$ConfigCIState
       )
-      $_ConfigCIRunning = 'Config-CI is enabled and running.'
-      $_ConfigCIDisabled = 'Config-CI is not running.'
-      $_ConfigCIMode = 'Not Enabled'
+      $ConfigCIRunning = 'Config-CI is enabled and running.'
+      $ConfigCIDisabled = 'Config-CI is not running.'
+      $ConfigCIMode = 'Not Enabled'
+
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
+      Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Rewrite))
 
-      switch ($_ConfigCIState)
+      switch ($ConfigCIState)
       {
         0 
         {
-          $_ConfigCIMode = 'Not Enabled'
+          $ConfigCIMode = 'Not Enabled'
         }
         1 
         {
-          $_ConfigCIMode = 'Audit mode'
+          $ConfigCIMode = 'Audit mode'
         }
         2 
         {
-          $_ConfigCIMode = 'Enforced mode'
+          $ConfigCIMode = 'Enforced mode'
         }
         default 
         {
-          $_ConfigCIMode = 'Not Enabled'
+          $ConfigCIMode = 'Not Enabled'
         }
       }
 
-      if($_ConfigCIState -ge 1)
+      if($ConfigCIState -ge 1)
       {
-        Write-Log -LogMessage ('{0} ({1})' -f $_ConfigCIRunning, $_ConfigCIMode)
+        Write-Log -LogMessage ('{0} ({1})' -f $ConfigCIRunning, $ConfigCIMode)
+        $FunctionMessage = $MyInvocation.MyCommand
+        Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
+        Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Rewrite))
       }
       else
       {
-        Write-Log -LogMessage ('{0} ({1})' -f $_ConfigCIDisabled, $_ConfigCIMode)
+        Write-Log -LogMessage ('{0} ({1})' -f $ConfigCIDisabled, $ConfigCIMode)
+        $FunctionMessage = $MyInvocation.MyCommand
+        Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
+        Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Rewrite))
       }
     }
 
     function Show-HVCIDetails
+    <# bookmark Renamed Function PrintHVCIDetails - Line-532 #>
     {
       <#
           .SYNOPSIS
@@ -1149,35 +1191,32 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       }
     }
 
-    function Test-IsRedstone
+    function Test-OSVersion
     {
       <#
           .SYNOPSIS
-          Default Comment based Help.  This still needs to be completed.
-      
+          Returns the OS version and build      
           .NOTE
-          This still needs to be completed.
+          Get-Readiness
       #>
-      $_osVersion = [environment]::OSVersion.Version
-      Write-Log -LogMessage $_osVersion
-
+      param
+      (
+        [Parameter(Mandatory = $false)][string]$OSbuild
+      )
+ 
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
+     
+      $OsVersion = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+      $Product = $OsVersion.ProductName
+      $Version = $OsVersion.ReleaseId
+      $OSbuild = ('{0}' -f ($OsVersion.CurrentBuild))
+      $FullBuild = ('Product: {0} - Version: {1} (Build: {2})' -f $Product, $Version, $build)
+      Write-Verbose -Message $FullBuild
 
-      #Check if build Major is Windows 10
-      if($_osVersion.Major -lt 10)
-      {
-        return 0
-      }
-      #Check if the build is post Threshold2 (1511 release) => Redstone
-      if($_osVersion.Build -gt 10586)
-      {
-        return 1
-      }
-      #default return False
-      return 0
+      Return $OSbuild
     }
+    Test-OSVersion -Verbose
 
     function Execute-CommandAndLog
     {
@@ -1199,8 +1238,8 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       try
       {
         Write-Log -LogMessage ('Executing: {0}' -f $_cmd)
-        $CmdOutput = Invoke-Command -ScriptBlock $_cmd | Out-String
-        Write-Log -LogMessage ('Output: {0}' -f $CmdOutput)
+        Write-Verbose -Message "$CmdOutput = Invoke-Command -ScriptBlock $_cmd | Out-String"
+        #Write-Log -LogMessage ('Output: {0}' -f $CmdOutput)
       }
       catch 
       {
@@ -1274,29 +1313,31 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
     }
 
     function Write-HardwareReq
-    <#bookmark Deprecated #>
+    <#bookmark Deprecated PrintHardwareReq #>
     {
       <#
           .SYNOPSIS
-          Default Comment based Help.  This still needs to be completed.
-      
+          OS and Hardware requirements for enabling Device Guard and Credential Guard
+
+          .DESCRIPTION
+          OS and Hardware requirements for enabling Device Guard and Credential Guard
+          1. OS SKUs: Available only on these OS Skus - Enterprise, Server, Education, Enterprise IoT, Pro, and Home
+          2. Hardware: Recent hardware that supports virtualization extension with SLAT
+
           .NOTE
-          This still needs to be completed.
+          Deprecated PrintHardwareReq 
+
+          .LINK
+          https://aka.ms/dgwhcr
+          The first link is opened by Get-Help -Online Write-HardwareReq
       #>
+
       param(
-        [Parameter(Mandatory = $false)]$MsgDetails
+        [Parameter(Mandatory = $false)][String]$MsgDetails
       )
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-      <#
-          "##########################################################################
-          OS and Hardware requirements for enabling Device Guard and Credential Guard
-          1. OS SKUs: Available only on these OS Skus - Enterprise, Server, Education, Enterprise IoT, Pro, and Home
-          2. Hardware: Recent hardware that supports virtualization extension with SLAT
-          To learn more please visit: https://aka.ms/dgwhcr
-          ########################################################################### `n"
-      #>
     }
 
     function Confirm-DriverCompatability
@@ -1555,7 +1596,7 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       else
       {
         Write-Log -LogMessage 'Virtualization firmware check failed.'
-        Write-Log -LogMessage 'If Virtualization extensions are supported on the system, enable hardware virtualization (Intel Virtualization Technology, Intel VT-x, Virtualization Extensions, or similar) in the BIOS and run the script again.'
+        # Write-Log -LogMessage 'If Virtualization extensions are supported on the system, enable hardware virtualization (Intel Virtualization Technology, Intel VT-x, Virtualization Extensions, or similar) in the BIOS and run the script again.'
         #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "Virtualization" /t REG_DWORD /d 0 /f '
         Write-Registry -registryPath $registryPath -Name 'Virtualization' -value 0 -PropertyType DWord
         $null = $DGVerifyCrit.AppendLine('Virtualization firmware check failed.')
@@ -1641,7 +1682,7 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
       }
       else
       {
-        $WarningMsg = $MessageWarning.AbsentMOR
+        $WarningMsg = $MessageWarning.Warning_102
         if($HLK)
         {
           Write-Log -LogMessage $WarningMsg
@@ -1750,21 +1791,18 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
     }
 
     function Write-ToolVersion
+    <#bookmark Deprecated PrintToolVersion #>
     {
       <#
           .SYNOPSIS
-          Default Comment based Help.  This still needs to be completed.
+          Created a title bar for the Script console
       
           .NOTE
-          This still needs to be completed.
+          This has been Deprecated PrintToolVersion.
       #>
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
       Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-
-      # Write-Log -LogMessage '###########################################################################'
-      # Write-Log -LogMessage "Readiness Tool Version 3.4 Release. `nTool to check if your device is capable to run Device Guard and Credential Guard."
-      # Write-Log -LogMessage '###########################################################################'
     }
 
   } # End BEGIN section
@@ -1777,113 +1815,6 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
 
   PROCESS
   {  
-    Write-ToolVersion
-
-    # Test Virtual System
-    $isRunningOnVM = (Get-WmiObject -Class win32_computersystem).model
-    if($isRunningOnVM.Contains('Virtual'))
-    {
-      Write-Warning -Message $UserMessage.Warning_2007
-      Write-Log -LogMessage $UserMessage.Warning_2007
-    }
-    # Test Virtual System
-    
-
-    <# Check the DG status if enabled or disabled, meaning if the device is ready or not #>
-    if($Ready)
-    {
-      Write-HardwareReq
-
-      $DGRunning = $(Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard).SecurityServicesRunning
-      $_ConfigCIState = $(Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard).CodeIntegrityPolicyEnforcementStatus
-      Write-Log -LogMessage ('Current DGRunning = {0}, ConfigCI= {1}' -f $DGRunning, $_ConfigCIState)
-      $_HVCIState = Test-DeviceGuard -CheckDGRunning -ItemValue 2
-      $_CGState = Test-DeviceGuard -CheckDGRunning -ItemValue 1
-
-      if($HVCI)
-      {
-        Write-Log -LogMessage ('_HVCIState: {0}' -f $_HVCIState)
-        Show-HVCIDetails -_HVCIState $_HVCIState
-      }
-      elseif($CG)
-      {
-        Write-Log -LogMessage ('_CGState: {0}' -f $_CGState)
-        Show-CGDetails -_CGState $_CGState
- 
-        if($_CGState)
-        {
-          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 1 /f'
-          Write-Verbose -Message 'CG_Running -value 1'
-          Write-Registry -registryPath $registryPath -Name 'CG_Running' -value 1 -PropertyType DWORD
-        }
-        else
-        {
-          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 0 /f'
-          Write-Verbose -Message 'CG_Running -value 0'
-          Write-Registry -registryPath $registryPath -Name 'CG_Running' -value 0 -PropertyType DWORD
-        }
-      }
-      elseif($DG)
-      {
-        Write-Log -LogMessage ('_HVCIState: {0}, _ConfigCIState: {1}' -f $_HVCIState, $_ConfigCIState) 
-
-        Show-HVCIDetails -_HVCIState $_HVCIState
-        # Write-ConfigCIDetails -_ConfigCIState $_ConfigCIState 
-
-        if($_ConfigCIState -and $_HVCIState)
-        {
-          Write-Log -LogMessage ('HVCI, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
- 
-          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 1 /f'
-          Write-Verbose -Message 'DG_Running -value 1'
-          Write-Registry -registryPath $registryPath -Name 'DG_Running' -value 1 -PropertyType DWORD
-        }
-        else
-        {
-          Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
- 
-          #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 0 /f'
-          Write-Verbose -Message 'DG_Running -value 0'
-          Write-Registry -registryPath $registryPath -Name 'DG_Running' -value 0 -PropertyType DWORD
-        }
-      }
-      else 
-      {
-        Write-Log -LogMessage ('_CGState: {0}, _HVCIState: {1}, _ConfigCIState: {2}' -f $_CGState, $_HVCIState, $_ConfigCIState) 
- 
-        Show-CGDetails -_CGState $_CGState
-        Show-HVCIDetails -_HVCIState $_HVCIState
-        # Write-ConfigCIDetails -_ConfigCIState $_ConfigCIState
-
-        if(($DGRunning.Length -ge 2) -and ($_CGState) -and ($_HVCIState) -and ($_ConfigCIState -ge 1))
-        {
-          Write-Log -LogMessage ('HVCI, Credential-Guard, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
-        }
-        else
-        {
-          Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
-        }
-      }
-    }
-
-
-
-    <# Is machine Device Guard / Cred Guard Capable and Verify #>
-    if($Capable)
-    {
-      Write-HardwareReq
-
-      Write-Log -LogMessage ('Checking if the device is DG/CG Capable - {0}' -f $MyInvocation.ScriptLineNumber)
-
-      $_isRedstone = Test-IsRedstone
-      if(!$_isRedstone)
-      {
-        Write-Log -LogMessage ('Capable is currently fully supported in Redstone only.. - {0}' -f $MyInvocation.ScriptLineNumber)
-      }
-
-      $null = 1
-    }
-
     [int]$Steps = ($CheckList.Count)
     $stepCounter = 01
     $CheckList.Keys | Start-CheckList
@@ -1894,9 +1825,162 @@ $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-
         Write-Host $($CheckList.$stepCounter.check)
         . ($CheckList.$stepCounter.check)
         }
-    #>
-    Write-Log -LogMessage 'To learn more about required hardware and software please visit: https://aka.ms/dgwhcr'
+    #>Write-ToolVersion   <# Deprecated PrintToolVersion #>
+    # If no switches selected (if(!($Ready) -and !($Capabl...) then display instructions. Changed to Comment Based Help - Line-948
+    # Test for Admin $TestForAdmin Deprecated by moving to "requires" area - Line-1003
+    
 
+
+    <# Check the DG status if enabled or disabled, meaning if the device is ready or not #>
+    if($Ready)
+    {
+      Write-Verbose -Message "Most of this was justing tests, so it was moved, so you don't have to use the ready switch"
+      $FunctionMessage = $MyInvocation.MyCommand
+      Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
+      Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
+    }
+
+    Write-HardwareReq <# Deprecated PrintHardwareReq #>
+
+    # Get current state of Device Guard
+    $DGRunning = [string](Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard).SecurityServicesRunning
+    $_ConfigCIState = $(Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard).CodeIntegrityPolicyEnforcementStatus
+    # Write-Log -LogMessage ('Current DGRunning = {0}, ConfigCI= {1}' -f $DGRunning, $_ConfigCIState)
+    Write-Verbose -Message $DGRunning
+    Write-Verbose -Message $_ConfigCIState
+    $FunctionMessage = $MyInvocation.MyCommand
+    Write-Verbose -Message ('Function: {0}' -f $FunctionMessage) #-Verbose
+    # Get current state of Device Guard
+      
+
+    $_HVCIState = [string](Test-DeviceGuard -CheckDGRunning -ItemValue 2)
+    $_CGState = [String](Test-DeviceGuard -CheckDGRunning -ItemValue 1)
+
+    if($HVCI) 
+    <# If "HVCI switch, show the status #>
+    { 
+      $FunctionMessage = 'If "HVCI switch, show the status'
+      Write-Verbose -Message ('Entering "if" Statment: {0}' -f $FunctionMessage) #-Verbose
+      Write-Warning -Message ('{0} : {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
+    } # Do not edit $HVCI above - delete latere
+
+    Write-Verbose -Message ('_HVCIState: {0}' -f $_HVCIState) 
+    if($_HVCIState)
+    {
+      $FunctionMessage = '$_HVCIState'
+      Write-Verbose -Message ('Entering "if" Statment: {0}' -f $FunctionMessage) #-Verbose
+      Write-Warning -Message ('{0} : {1}' -f $FunctionMessage, $($MessageInfo.rewrite))
+      Write-Log -LogMessage $UserMessage.Information_1041
+    }
+    else
+    {
+      Write-Log -LogMessage $UserMessage.HvciDisabled
+    }
+      
+    <#bookmark elseif($CG) #>
+    Write-Verbose -Message ('_CGState: {0}' -f $_CGState)
+    if($_CGState)      
+    {
+      $FunctionMessage = '$_CGState'
+      Write-Verbose -Message ('Entering "if" Statment: {0}' -f $FunctionMessage) #-Verbose
+      Write-Warning -Message ('{0} : {1}' -f $FunctionMessage, $($MessageInfo.rewrite))
+      Write-Log -LogMessage $UserMessage.Information_1041
+      Write-Log -LogMessage $UserMessage.Information_1042
+    }
+    else      
+    {
+      Write-Log -LogMessage $UserMessage.CGDisabled
+    }
+
+
+    ## Original end Of "if(Ready)" - Line-1803
+
+
+
+    <#bookmark elseif($CG) 
+        {
+        Write-Log -LogMessage ('_CGState: {0}' -f $_CGState)
+        Show-CGDetails -_CGState $_CGState
+ 
+        if($_CGState)
+        {
+        #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 1 /f'
+        Write-Verbose -Message 'CG_Running -value 1'
+        Write-Registry -registryPath $registryPath -Name 'CG_Running' -value 1 -PropertyType DWORD
+        }
+        else
+        {
+        #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "CG_Running" /t REG_DWORD /d 0 /f'
+        Write-Verbose -Message 'CG_Running -value 0'
+        Write-Registry -registryPath $registryPath -Name 'CG_Running' -value 0 -PropertyType DWORD
+        }
+        } 
+    #>
+    <#bookmark  elseif($DG) #>
+    #{
+    Write-Log -LogMessage ('_HVCIState: {0}, _ConfigCIState: {1}' -f $_HVCIState, $_ConfigCIState) 
+
+    Show-HVCIDetails -_HVCIState $_HVCIState
+    # Write-ConfigCIDetails -_ConfigCIState $_ConfigCIState 
+    #>
+    if($_ConfigCIState -and $_HVCIState)
+    {
+      Write-Log -LogMessage ('HVCI, and Config-CI are enabled and running.' )
+ 
+      #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 1 /f'
+      Write-Verbose -Message 'DG_Running -value 1'
+      #Write-Registry -registryPath $registryPath -Name 'DG_Running' -value 1 -PropertyType DWORD
+    }
+    <#else
+        {
+        Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
+ 
+        #Execute-CommandAndLog -_cmd 'REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities\" /v "DG_Running" /t REG_DWORD /d 0 /f'
+        Write-Verbose -Message 'DG_Running -value 0'
+        #Write-Registry -registryPath $registryPath -Name 'DG_Running' -value 0 -PropertyType DWORD
+    }#>
+    #}
+    else 
+    {
+      Write-Log -LogMessage ('_CGState: {0}, _HVCIState: {1}, _ConfigCIState: {2}' -f $_CGState, $_HVCIState, $_ConfigCIState) 
+ 
+      Show-CGDetails -_CGState $_CGState
+      Show-HVCIDetails -_HVCIState $_HVCIState
+      # Write-ConfigCIDetails -_ConfigCIState $_ConfigCIState
+
+      if(($DGRunning.Length -ge 2) -and ($_CGState) -and ($_HVCIState) -and ($_ConfigCIState -ge 1))
+      {
+        Write-Log -LogMessage ('HVCI, Credential-Guard, and Config-CI are enabled and running. - {0}' -f $MyInvocation.ScriptLineNumber)
+      }
+      else
+      {
+        Write-Log -LogMessage ('Not all services are running. - {0}' -f $MyInvocation.ScriptLineNumber)
+      }
+    }
+    #}
+
+
+    
+    if($Capable) 
+    {
+      # Test Virtual System
+      $isRunningOnVM = (Get-WmiObject -Class win32_computersystem).model
+      if($isRunningOnVM.Contains('Virtual'))
+      {
+        Write-Warning -Message $UserMessage.Warning_2007
+        Write-Log -LogMessage $UserMessage.Warning_2007
+      }
+      # Test Virtual System
+   
+      if((([environment]::OSVersion).Version.Build) -gt 10586)
+      {
+        Write-Log -LogMessage ('Checking if the device is DG/CG Capable')
+        Write-Verbose -Message 'Operating System Good'
+      }
+    }
+
+
+    
   } #End PROCESS section
 
   END
@@ -2166,16 +2250,6 @@ Function Set-DgReadiness
       Execute-CommandAndLog -_cmd 'bcdedit /set "{0cb3b571-2f2e-4343-a879-d86a476d7215}" device partition=$FreeDrive'
       Execute-CommandAndLog -_cmd 'mountvol $FreeDrive /d'
       #steps complete
-    }
-    Auto-RebootHelper
-  }
-
-  function Reset-Verifier  
-  {
-    #$verifier_state = & "$env:windir\system32\verifier.exe" /query | Out-String
-    if(!$verifier_state.ToString().Contains('No drivers are currently verified.'))
-    {
-      #Execute-CommandAndLog -_cmd 'verifier.exe /reset'
     }
     Auto-RebootHelper
   }
