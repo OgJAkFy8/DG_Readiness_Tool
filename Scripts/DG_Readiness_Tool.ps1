@@ -105,36 +105,7 @@ Function Get-DgReadiness
   
   BEGIN
   {
-    
-    
-    function Start-CheckList
-    {
-      <#
-          .SYNOPSIS
-          Run the checks listed in the hash table $Checklist
-
-          .NOTES
-          Place additional notes here.
-
-      #>
-
-
-      param
-      (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, HelpMessage = 'Data to process')]
-        $InputObject
-      )
-      process
-      {
-    
-        Write-ProgressHelper -Message ($CheckList.$InputObject.Message) -StepNumber ($stepCounter) -Steps $Steps
-        Write-Host $($CheckList.$InputObject.check)
-        . ($CheckList.$InputObject.check)
-        $stepCounter++
-        
-      }
-    }
-
+    # Set Variables 
     $Script:LogFile = ('{0}\DeviceGuardCheckWrite-{1}.txt' -f $OutputFilePath, (Get-Date -Format MMddhhmmss))
 
     $Script:CompatibleModules = New-Object -TypeName System.Text.StringBuilder
@@ -402,6 +373,34 @@ Function Get-DgReadiness
     }
     Use-TranscriptLog -Start $LogFile
     
+    function Start-CheckList
+    {
+      <#
+          .SYNOPSIS
+          Run the checks listed in the hash table $Checklist
+
+          .NOTES
+          Place additional notes here.
+
+      #>
+
+
+      param
+      (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, HelpMessage = 'Data to process')]
+        $InputObject
+      )
+      process
+      {
+    
+        Write-ProgressHelper -Message ($CheckList.$InputObject.Message) -StepNumber ($stepCounter) -Steps $Steps
+        Write-Host $($CheckList.$InputObject.check)
+        . ($CheckList.$InputObject.check)
+        $stepCounter++
+        
+      }
+    }
+
     function Write-Registry
     {
       <#
