@@ -710,10 +710,7 @@ if(![IO.Directory]::Exists($path))
 {
   New-Item -ItemType directory -Path $path
 }
-else
-{
-  #Do Nothing!!
-}
+
 
 function IsRedstone
 {
