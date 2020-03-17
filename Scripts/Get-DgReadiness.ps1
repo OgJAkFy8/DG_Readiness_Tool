@@ -264,8 +264,8 @@ Function Get-DgReadiness
       Warning_2007        = 'Running on a Virtual Machine. DG/CG is supported only if both guest VM and host machine are running with Windows10, version 1703 or later with English localization.'
       Warning_2008        = 'SMM Mitigation is absent'
       Warning_2009        = 'The following additional qualifications, if present, can enhance the security of Device Guard and Credential Guard on this system:'
-    Information_1041 = 'HVCI is enabled and running.'
-    Information_1042 = 'Credential Guard is enabled and running.'
+      Information_1041    = 'HVCI is enabled and running.'
+      Information_1042    = 'Credential Guard is enabled and running.'
     }
 
     $CheckList = [ordered]@{
@@ -430,12 +430,11 @@ Function Get-DgReadiness
       
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
-      #Write-Warning -Message ('{0}: {1}' -f $FunctionMessage, $($MessageInfo.Deprecated))
-      
+
       $timeStamp = Get-Date -UFormat '%D %T'
 
       Tee-Object -InputObject ('{0} : {1}' -f $timeStamp, $LogMessage) -FilePath $LogFile -Append
-      Write-Verbose -Message ('Write Log >>> {0}' -f $LogMessage)
+      Write-Verbose -Message ('Write-Log >>> {0}' -f $LogMessage)
     }
 
     function Write-Registry
@@ -480,7 +479,7 @@ Function Get-DgReadiness
     }
     #Write-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard' -Name 'EnableVirtualizationBasedSecurity' -value 1 -PropertyType DWORD
 
-        Function Test-DeviceGuard 
+    Function Test-DeviceGuard 
     <#bookmark NewFunction #>
     <#bookmark Deprecated CheckDGRunning #>
     <#bookmark Deprecated CheckDGFeatures #>
@@ -529,7 +528,7 @@ Function Get-DgReadiness
       }
       return $false
     }
-  #Test-DeviceGuard -CheckDGRunning -ItemValue 2
+    #Test-DeviceGuard -CheckDGRunning -ItemValue 2
 
 
 
