@@ -56,17 +56,17 @@
           .SYNOPSIS
           Used to deletes a property and its value from an item. You can use it to delete registry values and the data that they store.
           .EXAMPLE
-          Remove-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuardTest' -Name CG_Capable
+          Remove-Registry -registryPath 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuardTest' -registryName CG_Capable
           .EXAMPLE
           $registryPath = 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuardTest' # TEsting without admin
-          $Name = 'Test'
-          Remove-Registry -registryPath $registryPath -Name $Name
+          $registryName = 'Test'
+          Remove-Registry -registryPath $registryPath -registryName $registryName
           .NOTES
       #>
 
       param(
         [Parameter(Mandatory)][String]$registryPath,
-        [Parameter(Mandatory)][String]$Name
+        [Parameter(Mandatory)][String]$registryName
       )
       $FunctionMessage = $MyInvocation.MyCommand
       Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
@@ -92,16 +92,15 @@
         }
       }
 
-      if(Test-RegistryValue -Path $registryPath -Name $Name)
+      if(Test-RegistryValue -Path $registryPath -Name $registryName)
       {
-        Write-Verbose -Message ('Deleting "{0}" from {1}' -f $Name, $registryPath) -Verbose
-        #$null = 
-        Remove-ItemProperty -Path $registryPath -Name $Name -Force
+        Write-Verbose -Message ('Deleting "{0}" from {1}' -f $registryName, $registryPath) -Verbose
+        $null = Remove-ItemProperty -Path $registryPath -Name $registryName -Force
       }
       
       ELSE
       {
-        Write-Verbose -Message ('"{0}" is not present in {1}' -f $Name, $registryPath) -Verbose
+        Write-Verbose -Message ('"{0}" is not present in {1}' -f $registryName, $registryPath) -Verbose
       }
     }
   }
@@ -110,18 +109,22 @@
     Write-Verbose -Message 'Disabling Device Guard and Credential Guard'
     Write-Verbose -Message 'Deleting RegKeys to disable DG/CG'
 
-    Remove-Registry -registryPath $registryPath -Name 'EnableVirtualizationBasedSecurity' 
-    Remove-Registry -registryPath $registryPath -Name 'RequirePlatformSecurityFeatures' 
-    Remove-Registry -registryPath $registryPath -Name 'NoLock'
-    Remove-Registry -registryPath $registryPath -Name 'Locked'
+    Remove-Registry -registryPath $registryPath -registryName 'EnableVirtualizationBasedSecurity' 
+    Remove-Registry -registryPath $registryPath -registryName 'RequirePlatformSecurityFeatures' 
+    Remove-Registry -registryPath $registryPath -registryName 'NoLock'
+    Remove-Registry -registryPath $registryPath -registryName 'Locked'
 
-    Remove-Registry -registryPath $registryPath -Name 'HypervisorEnforcedCodeIntegrity' 
-    Remove-Registry -registryPath "$registryPath\Scenarios" -Name 'HypervisorEnforcedCodeIntegrity' 
+    Remove-Registry -registryPath $registryPath -registryName 'HypervisorEnforcedCodeIntegrity' 
+    Remove-Registry -registryPath "$registryPath\Scenarios" -registryName 'HypervisorEnforcedCodeIntegrity' 
 
-    Remove-Registry -registryPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa'  -Name  'LsaCfgFlags'
+    Remove-Registry -registryPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa'  -registryName  'LsaCfgFlags'
 
-    Remove-Item -Path "$env:windir\System32\CodeIntegrity\SIPolicy.p7b" -Force -ErrorAction SilentlyContinue
- 
+    try{
+      Remove-Item -Path "$env:windir\System32\CodeIntegrity\SIPolicy.p7b" -Force -ErrorAction Stop
+    }
+    catch{
+      Write-Warning "SIPolicy.p7b not present" 
+    }
 
     Write-Log -LogMessage 'Disabling Hyper-V and IOMMU'
     <#        $_isRedstone = IsRedstone
@@ -129,7 +132,7 @@
         {
         Write-Log 'OS Not Redstone, disabling IsolatedUserMode separately'
         #Enable/Disable IOMMU seperately
-        ExecuteCommandAndLog 'DISM.EXE /Online /disable-Feature /FeatureName:IsolatedUserMode /NoRestart'
+        ExecuteCommandAndLog 'DISM.EXE /Online /disable-Feature /FeatureregistryName:IsolatedUserMode /NoRestart'
     }#>
     $WaitTime = 10
     $stopWatch.Start()

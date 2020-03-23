@@ -122,7 +122,7 @@ $Script:DGVerifyCrit = New-Object -TypeName System.Text.StringBuilder
 $Script:DGVerifyWarn = New-Object -TypeName System.Text.StringBuilder
 $Script:DGVerifySuccess = New-Object -TypeName System.Text.StringBuilder # Potentially Unsed Assignment
     
-$registryPath = 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities' # TEsting without admin
+$registryPath = 'HKCU:\SYSTEM\CurrentControlSet\Control\DeviceGuard2' # TEsting without admin
 #$registryPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Capabilities'
 
 $Script:Sys32Path = "$env:windir\system32"
@@ -197,13 +197,15 @@ function Write-Log
   #>
   param
   (
-    [Parameter(Mandatory = $false)]
+    [Parameter(ParameterSetName = 'Log',Mandatory = $false)]
+    [String]$LogMessage,
+    [Parameter(ParameterSetName = 'Message',Mandatory = $false)]
     [String]$Message
   )
-  $LogMessage = $Message
+  if($Message){$LogMessage = $Message}
 
   $FunctionMessage = $MyInvocation.MyCommand
-  Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) #-Verbose
+  Write-Verbose -Message ('Entering function: {0}' -f $FunctionMessage) 
 
   $timeStamp = Get-Date -UFormat '%D %T'
 
@@ -755,7 +757,7 @@ function AutoRebootHelper
   if($AutoReboot)
   {
     Write-LogAndConsole 'PC will restart in 30 seconds'
-    ExecuteCommandAndLog 'shutdown /r /t 30'
+    #ExecuteCommandAndLog 'shutdown /r /t 30'
   }
   else
   {
@@ -949,7 +951,7 @@ function CheckVirtualization
 {
   $_vmmExtension = $(Get-WmiObject -Class Win32_processor).VMMonitorModeExtensions
   $_vmFirmwareExtension = $(Get-WmiObject -Class Win32_processor).VirtualizationFirmwareEnabled
-  $_vmHyperVPresent = (gcim -Class Win32_ComputerSystem).HypervisorPresent
+  $_vmHyperVPresent = (Get-CimInstance -Class Win32_ComputerSystem).HypervisorPresent
   Write-Log "VMMonitorModeExtensions $_vmmExtension"
   Write-Log "VirtualizationFirmwareEnabled $_vmFirmwareExtension"
   Write-Log "HyperVisorPresent $_vmHyperVPresent"
@@ -1014,7 +1016,7 @@ function CheckTPM
 function CheckSecureMOR
 {
   $isSecureMOR = CheckDGFeatures(4)
-  Write-Log "isSecureMOR= $isSecureMOR " 
+  Write-Log "isSecureMOR = $isSecureMOR" 
   if($isSecureMOR -eq 1)
   {
     Write-LogAndConsoleSuccess 'Secure MOR is available'
